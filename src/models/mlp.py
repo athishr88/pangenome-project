@@ -9,8 +9,9 @@ class MLPModel(nn.Module):
         hidden_size = cfg.model.model_params.hidden_size
         output_size = cfg.preprocessing.dataset.num_classes
         num_hidden_layers = cfg.model.model_params.num_hid_layers
-        self.batch_norm = cfg.model.model_params.batch_norm
+        self.is_batch_norm = cfg.model.model_params.batch_norm
         self.dropout_val = cfg.model.model_params.dropout_val
+        self.bn = nn.BatchNorm1d(hidden_size)
 
         self.fc1 = nn.Linear(input_size, hidden_size)
         self.hidden_layers = nn.ModuleList()
@@ -21,12 +22,12 @@ class MLPModel(nn.Module):
     def forward(self, x):
         x = F.relu(self.fc1(x))
         x = F.dropout(x, p=self.dropout_val, training=self.training)
-        if self.batch_norm:
-            x = F.batch_norm(x)
+        if self.is_batch_norm:
+            x = self.bn(x)
         for layer in self.hidden_layers:
             x = F.relu(layer(x))
             x = F.dropout(x, p=self.dropout_val, training=self.training)
-            if self.batch_norm:
-                x = F.batch_norm(x)
+            if self.is_batch_norm:
+                x = self.bn(x)
         x = self.fc2(x)
         return x
