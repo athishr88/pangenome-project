@@ -1,0 +1,8 @@
+hyperparams:
+  num_epochs: 300
+  lr: 1e-3
+  
+
+  
+  
+  

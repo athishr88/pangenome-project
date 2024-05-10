@@ -1,0 +1,4 @@
+pgg:
+  logfile: ./logs/pgg.log
+  sequence_map_pickle_path: ./cache/sequence_map.pkl
+  pgg_file: ./MosesFiles/pggb_100_original.gfa

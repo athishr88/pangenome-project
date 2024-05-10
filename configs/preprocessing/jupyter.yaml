@@ -1,0 +1,6 @@
+defaults:
+  - base
+
+dataset:
+  zip_path: ../data/tfrecord_to_sample
+  serotype_file_path: ../data/SRA_Serotype_file.csv
