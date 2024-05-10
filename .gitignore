@@ -4,3 +4,7 @@ data/
 outputs/
 test_files/
 **__pycache__**
+logs/mlp_loss_history.json
+logs/mlp_train_log.log
+output.out
+saved_models/
