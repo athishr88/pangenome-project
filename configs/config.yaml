@@ -3,3 +3,4 @@ defaults:
   - preprocessing: base
   - training: mlp
   - model: mlp
+  - logging: mlp
