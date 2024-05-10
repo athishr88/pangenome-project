@@ -1,0 +1,6 @@
+MosesFiles/
+cache/
+data/
+outputs/
+test_files/
+**__pycache__**
