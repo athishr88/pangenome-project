@@ -3,5 +3,5 @@ cache/
 data/
 outputs/
 test_files/
-**/__pycache__/**
+**__pycache__**
 logs/mlp_train_log.log
