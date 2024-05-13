@@ -44,7 +44,7 @@ class MLPTrainer:
         num_epochs = self.cfg.training.hyperparams.num_epochs
 
         best_val_f1 = 0
-        self.logger.log("Starting training")
+        self.logger.log(f"Starting training on device {device}")
 
         for epoch in range(num_epochs):
             self.logger.log(f"Epoch {epoch}")
@@ -70,7 +70,7 @@ class MLPTrainer:
             test_preds, test_targets, total_test_loss = [], [], 0
             with torch.no_grad():
                 for i, (x, y) in enumerate(val_loader):
-                    x, y = x.to(device), y.to(device)
+                    x, y = x.float().to(device), y.long().to(device)
                     y_pred = model(x)
                     val_loss = criterion(y_pred, y)
                     total_val_loss += val_loss.item()
@@ -85,7 +85,7 @@ class MLPTrainer:
                     torch.save(model.state_dict(), self.cfg.training.model.save_path)
 
                 for i, (x, y) in enumerate(test_loader):
-                    x, y = x.to(device), y.to(device)
+                    x, y = x.float().to(device), y.long().to(device)
                     y_pred = model(x)
                     test_loss = criterion(y_pred, y)
                     total_test_loss += test_loss.item()

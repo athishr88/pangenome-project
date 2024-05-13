@@ -1,7 +1,7 @@
 hyperparams:
   num_epochs: 300
   lr: 1e-3
-  batch_size: 32
+  batch_size: 256
   
 model:
   save_path: saved_models/model.pth
