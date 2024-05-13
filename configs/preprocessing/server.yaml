@@ -1,10 +1,6 @@
+defaults:
+  - base
+  
 dataset:
   zip_path: /home/ShareDirectory/Adam_Project/TF_Extracted/TFRecord_to_sample
   serotype_file_path: /home/ShareDirectory/Adam_Project/TF_Extracted/SRA_Serotype_file.csv
-  highest_index: 236070 #236068
-  lowest_index: 0
-  num_classes: 2054
-  sparse_vals_used: False
-  test_size: 0.2
-  val_size: 0.1
-  random_state: 42

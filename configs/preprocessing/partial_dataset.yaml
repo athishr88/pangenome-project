@@ -1,0 +1,17 @@
+defaults:
+  - base
+  
+dataset:
+  partial_used: True
+  num_classes: 10 # Should match the number of classes listed in 'classes'
+  classes:
+    - Enteritidis
+    - Typhimurium
+    - Newport
+    - Infantis
+    - I14512i-
+    - Typhi
+    - Javiana
+    - Kentucky
+    - Montevideo
+    - Saintpaul

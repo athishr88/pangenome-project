@@ -1,4 +1,4 @@
-from preprocessing.dataloader import TFRecordsDataset
+from preprocessing.dataloader import TFRecordsDataset, TFRecordsPartialDataset
 from utils.json_logger import update_metrics
 from torch.utils.data import DataLoader
 from sklearn.metrics import f1_score
@@ -14,11 +14,19 @@ class MLPTrainer:
         self.logger = Logger(cfg)
         self.cfg = cfg
 
+        # Check if full or partial dataset is used
+        if hasattr(cfg.preprocessing.dataset, "partial_used"):
+            self.dataset = TFRecordsPartialDataset
+            self.logger.log("Using partial dataset")
+        else:
+            self.dataset = TFRecordsDataset
+            self.logger.log("Using full dataset")
+
     def _get_dataloaders(self):
-        TFRecordsDataset.initialize_data(self.cfg)
-        train_dataset = TFRecordsDataset.from_split('train')
-        val_dataset = TFRecordsDataset.from_split('val')
-        test_dataset = TFRecordsDataset.from_split('test')
+        self.dataset.initialize_data(self.cfg)
+        train_dataset = self.dataset.from_split('train')
+        val_dataset = self.dataset.from_split('val')
+        test_dataset = self.dataset.from_split('test')
         train_loader = DataLoader(train_dataset, batch_size=self.cfg.training.hyperparams.batch_size, shuffle=True)
         val_loader = DataLoader(val_dataset, batch_size=self.cfg.training.hyperparams.batch_size, shuffle=False)
         test_loader = DataLoader(test_dataset, batch_size=self.cfg.training.hyperparams.batch_size, shuffle=False)
@@ -47,7 +55,8 @@ class MLPTrainer:
                 optimizer.zero_grad()
                 y_pred = model(x)
                 loss = criterion(y_pred, y)
-                self.logger.log(f"Train Batch {i}/{len(train_loader)}: Loss: {loss.item()}")
+                if i % 100 == 0:
+                    self.logger.log(f"Train Batch {i}/{len(train_loader)}: Loss: {loss.item()}")
                 total_train_loss += loss.item()
                 loss.backward()
                 train_preds.extend(y_pred.argmax(dim=1).cpu().numpy())
