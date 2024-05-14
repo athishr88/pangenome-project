@@ -1,0 +1,19 @@
+defaults:
+  - base
+  
+dataset:
+  zip_path: /home/ShareDirectory/Adam_Project/TF_Extracted/TFRecord_to_sample
+  serotype_file_path: /home/ShareDirectory/Adam_Project/TF_Extracted/SRA_Serotype_file.csv  
+  partial_used: True
+  num_classes: 10 # Should match the number of classes listed in 'classes'
+  classes:
+    - Enteritidis
+    - Typhimurium
+    - Newport
+    - Infantis
+    - I14512i-
+    - Typhi
+    - Javiana
+    - Kentucky
+    - Montevideo
+    - Saintpaul
