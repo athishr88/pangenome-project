@@ -1,0 +1,3 @@
+train:
+  logfile: ../logs/mlp_train_log.log
+  train_history: ../logs/mlp_loss_history.json  

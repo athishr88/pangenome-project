@@ -22,3 +22,4 @@ class Controller:
     def train_mlp(self, cfg):
         trainer = MLPTrainer(cfg)
         trainer.train()
+        

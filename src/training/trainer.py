@@ -4,6 +4,7 @@ from torch.utils.data import DataLoader
 from sklearn.metrics import f1_score
 from models.mlp import MLPModel
 from utils.logger import Logger
+from utils.cacher import cache
 import torch
 
 
@@ -30,8 +31,14 @@ class MLPTrainer:
         train_loader = DataLoader(train_dataset, batch_size=self.cfg.training.hyperparams.batch_size, shuffle=True)
         val_loader = DataLoader(val_dataset, batch_size=self.cfg.training.hyperparams.batch_size, shuffle=False)
         test_loader = DataLoader(test_dataset, batch_size=self.cfg.training.hyperparams.batch_size, shuffle=False)
+        self._cache_loaders(train_loader, val_loader, test_loader)
         return train_loader, val_loader, test_loader
     
+    def _cache_loaders(self, train_loader, val_loader, test_loader):
+        cache(train_loader, self.cfg.utils.xai.train_data_cache_path)
+        cache(val_loader, self.cfg.utils.xai.val_data_cache_path)
+        cache(test_loader, self.cfg.utils.xai.test_data_cache_path)
+
     def train(self):
         self.logger.log("Initializing training")
         train_loader, val_loader, test_loader = self._get_dataloaders()

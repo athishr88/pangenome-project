@@ -2,3 +2,8 @@ pgg:
   logfile: ./logs/pgg.log
   sequence_map_pickle_path: ./cache/sequence_map.pkl
   pgg_file: ./MosesFiles/pggb_100_original.gfa
+
+xai:
+  train_data_cache_path: ./cache/dataloader_cache/train_loader.pkl
+  val_data_cache_path: ./cache/dataloader_cache/valid_loader.pkl
+  test_data_cache_path: ./cache/dataloader_cache/test_loader.pkl

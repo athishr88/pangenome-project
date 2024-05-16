@@ -1,6 +1,7 @@
 defaults:
   - utils: base
   - preprocessing: base
-  - training: mlp
-  - model: mlp
-  - logging: mlp
+  - training: base
+  - model: base
+  - logging: base
+  - explanation: base
