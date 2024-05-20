@@ -1,4 +1,4 @@
-from preprocessing.dataloader import TempSingleClassDataset
+from preprocessing.dataloader import SingleClassDataset
 from torch.utils.data import DataLoader
 from models.mlp import MLPModel
 from captum.attr import DeepLift
@@ -9,25 +9,17 @@ import pickle
 import torch
 
 class DeepLiftExplainerPartialDataset:
-    def __init__(self, cfg):
+    def __init__(self, cfg, model_path=None):
         self.logger = Logger(cfg)
         self.cfg = cfg
-        self.model = self._load_model()
+        self.model = self._load_model(model_path)
         self.explainer = DeepLift(self.model)
-        self.num_iters = 20
-        self.y_map = {'Enteritidis': 0,
-                      'I14512i-': 1,
-                      'Infantis': 2,
-                      'Javiana': 3,
-                      'Kentucky': 4,
-                      'Montevideo': 5,
-                      'Newport': 6,
-                      'Saintpaul': 7,
-                      'Typhi': 8,
-                      'Typhimurium': 9}
+        self.num_iters = 20 # Number of times the test_loader is called
+        self.y_map = None
 
-    def _load_model(self):
-        model_path = self.cfg.explanation.deeplift.model_path
+    def _load_model(self, model_path=None):
+        if model_path is None:
+            model_path = self.cfg.explanation.deeplift.model_path
         model = MLPModel(self.cfg)
         model.load_state_dict(torch.load(model_path))
         self.logger.log(f"Model loaded from {model_path}")
@@ -65,7 +57,8 @@ class DeepLiftExplainerPartialDataset:
         self.logger.log("Starting explanation")
         classes = self.cfg.preprocessing.dataset.classes
         for serotype in classes:
-            dataset = TempSingleClassDataset(self.cfg, serotype)
+            dataset = SingleClassDataset(self.cfg, serotype)
+            self.y_map = dataset.y_map
             loader = DataLoader(dataset, batch_size=32, shuffle=False)
             self._explain(loader, serotype)
 

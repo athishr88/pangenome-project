@@ -96,6 +96,7 @@ class BaseTFRecordsDataset(Dataset):
         if self.cfg.preprocessing.dataset.sparse_vals_used:
             sparse_values = np.array(sparse_values, dtype=float)
             X[indices] = sparse_values
+            raise NotImplementedError("Sparse values not implemented.")
         else:
             X[indices] = 1.0
         return X
@@ -164,20 +165,24 @@ class TFRecordsPartialDataset(BaseTFRecordsDataset):
         cls.tfr_sample_ys_df = df_filtered
         return tfr_filenames
 
-class SingleClassDataset(BaseTFRecordsDataset):
-
-    def __init__(self, cfg, serotype):
-        super().__init__('train')
+class SingleClassDataset(Dataset):
+    def __init__(self, cfg, serotype) -> None:
+        super().__init__()
         self.cfg = cfg
+        self._y_map = None
         self.serotype = serotype
         self.sample_names_to_zipfile_map = {}
         self.tfr_sample_names = self._get_tfr_sample_names()
         self.indices = self._get_indices()
+    
+    @property
+    def y_map(self):
+        return self._y_map
 
     def _get_tfr_sample_names(self):
         y_file = self.cfg.preprocessing.dataset.serotype_file_path
         df = pd.read_csv(y_file)
-        df_filtered = df[df['Serotype'] == self.serotype]
+        df_filtered = df[df['Serotype']==self.serotype]
         tfr_filenames_stem = df_filtered['SRA_ACCESSION_NUMBER'].values
         tfr_filenames = [f'{name}.csv' for name in tfr_filenames_stem]
         filenames_numbers = df_filtered['Src_file'].values
@@ -188,10 +193,47 @@ class SingleClassDataset(BaseTFRecordsDataset):
         le = LabelEncoder()
         df_filtered['serotype_encoded'] = le.fit_transform(df_filtered['Serotype'])
         self.tfr_sample_ys_df = df_filtered
+        self._y_map = {class_label:index for index, class_label in enumerate(le.classes_)}
         return tfr_filenames
-
+    
     def _get_indices(self):
-        return list(range(len(self.tfr_sample_names)))
+        indices = list(range(len(self.tfr_sample_names)))
+        return indices
+    
+    def _get_full_path(self, filename):
+        """Searches which zip file contains the given filename
+        from the mapping and returns the full path to the file.
+        """
+        zip_file = self.sample_names_to_zipfile_map[filename]
+        return os.path.join(self.cfg.preprocessing.dataset.zip_path, zip_file)
+    
+    def _indices_and_sparse_vals(self, idx):
+        filename = self.tfr_sample_names[idx]
+        full_path = self._get_full_path(filename)
+        with zipfile.ZipFile(full_path, 'r') as zip_ref:
+            with zip_ref.open(filename) as file:
+                X = file.readline().decode('utf-8').strip().split(',')
+                sparse_vals = file.readline().decode('utf-8').strip().split(',')
+        return X, sparse_vals
+    
+    def _get_X(self, indices, sparse_values):
+        """Produces fixed length feature vector from indices and sparse values."""
+        feature_vector_len = self.cfg.preprocessing.dataset.highest_index+1
+        X = np.zeros(feature_vector_len)
+        indices = np.array(indices, dtype=int)
+        if self.cfg.preprocessing.dataset.sparse_vals_used:
+            sparse_values = np.array(sparse_values, dtype=float)
+            X[indices] = sparse_values
+        else:
+            X[indices] = 1.0
+        return X
+
+    
+    def _get_y(self, idx):
+        filename = self.tfr_sample_names[idx].split('.')[0]
+        y = self.tfr_sample_ys_df[self.tfr_sample_ys_df[
+            'SRA_ACCESSION_NUMBER'] == filename]['serotype_encoded'].values[0]
+        return y
 
     def __len__(self):
         return len(self.indices)
@@ -202,4 +244,4 @@ class SingleClassDataset(BaseTFRecordsDataset):
         indices, sparse_values = self._indices_and_sparse_vals(actual_idx)
         X = self._get_X(indices, sparse_values)
         y = self._get_y(actual_idx)
-        return
+        return X, y

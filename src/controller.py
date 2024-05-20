@@ -1,7 +1,7 @@
+from postprocessing.explainer import DeepLiftExplainerPartialDataset
 from utils.pangenome_graph_utils import get_sequence_map
 from preprocessing.dataloader import TFRecordsDataset
 from training.trainer import MLPTrainer
-from training.trainer_trial import MLPTrainerTrial
 
 class Controller:
     """Controller contains all individual services and 
@@ -24,8 +24,7 @@ class Controller:
         trainer = MLPTrainer(cfg)
         trainer.train()
 
-
-    def train_mlp_trial(self, cfg):
-        trainer = MLPTrainerTrial(cfg)
-        trainer.train()
+    def explain_model(self, cfg):
+        explainer = DeepLiftExplainerPartialDataset(cfg)
+        explainer.explain_test()
         
