@@ -31,14 +31,8 @@ class MLPTrainer:
         train_loader = DataLoader(train_dataset, batch_size=self.cfg.training.hyperparams.batch_size, shuffle=True)
         val_loader = DataLoader(val_dataset, batch_size=self.cfg.training.hyperparams.batch_size, shuffle=False)
         test_loader = DataLoader(test_dataset, batch_size=self.cfg.training.hyperparams.batch_size, shuffle=False)
-        self._cache_loaders(train_loader, val_loader, test_loader)
         return train_loader, val_loader, test_loader
     
-    def _cache_loaders(self, train_loader, val_loader, test_loader):
-        cache(train_loader, self.cfg.utils.xai.train_data_cache_path)
-        cache(val_loader, self.cfg.utils.xai.val_data_cache_path)
-        cache(test_loader, self.cfg.utils.xai.test_data_cache_path)
-
     def train(self):
         self.logger.log("Initializing training")
         train_loader, val_loader, test_loader = self._get_dataloaders()
@@ -62,7 +56,7 @@ class MLPTrainer:
                 optimizer.zero_grad()
                 y_pred = model(x)
                 loss = criterion(y_pred, y)
-                if i % 100 == 0:
+                if i % 2 == 0:
                     self.logger.log(f"Train Batch {i}/{len(train_loader)}: Loss: {loss.item()}")
                 total_train_loss += loss.item()
                 loss.backward()

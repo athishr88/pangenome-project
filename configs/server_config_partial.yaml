@@ -1,7 +1,7 @@
 defaults:
   - utils: base
-  - preprocessing: base
-  - training: mlp
-  - model: mlp
-  - logging: mlp
-  - explanation: mlp
+  - training: base
+  - model: base
+  - logging: base
+  - explanation: mlp_partial
+  - preprocessing: partial_dataset_server

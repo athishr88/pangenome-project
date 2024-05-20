@@ -5,8 +5,8 @@ import pickle
 def pickle_exists(func):
     def wrapper(*args, **kwargs):
         config = args[0]
-        logfile = config.pgg.logfile
-        pickle_file = config.pgg.sequence_map_pickle_path
+        logfile = config.utils.pgg.logfile
+        pickle_file = config.utils.pgg.sequence_map_pickle_path
         if os.path.exists(pickle_file):
             with open(logfile, 'a') as log:
                 log.write(f"Reading sequence map from {pickle_file}\n")
@@ -25,8 +25,8 @@ def get_sequence_map(config):
     Returns a dictionary with the sequence name as key and the sequence as value.
     @param pgg_file: The path to the pangenome graph file.
     """
-    logfile = config.pgg.logfile
-    pgg_file = config.pgg.pgg_file
+    logfile = config.utils.pgg.logfile
+    pgg_file = config.utils.pgg.pgg_file
     sequence_map = {}
     with open(logfile, 'a') as log:
         log.write(f"Reading sequences from {pgg_file}\n")
