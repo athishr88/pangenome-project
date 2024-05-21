@@ -2,7 +2,7 @@ defaults:
   - base
   
 dataset:
-  dataset_used: partial
+  dataset_used: partial_features
   num_classes: 10 # Should match the number of classes listed in 'classes'
   classes:
     - Enteritidis

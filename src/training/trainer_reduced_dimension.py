@@ -1,4 +1,4 @@
-from preprocessing.dataloader import TFRecordsDataset, TFRecordsPartialDataset
+from preprocessing.dimensionality_reduction import TFRSubsetPartialDataset
 from utils.json_logger import update_metrics
 from torch.utils.data import DataLoader
 from sklearn.metrics import f1_score
@@ -7,23 +7,14 @@ from utils.logger import Logger
 from utils.cacher import cache
 import torch
 
-
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-class MLPTrainer:
+class MLPTrainerReducedDimension:
     def __init__(self, cfg):
         self.logger = Logger(cfg)
         self.cfg = cfg
-
-        # Check if full or partial dataset is used
-        if cfg.preprocessing.dataset.dataset_used == 'partial':
-            self.dataset = TFRecordsPartialDataset
-            self.logger.log("Using partial dataset")
-        elif cfg.preprocessing.dataset.dataset_used == 'full':
-            self.dataset = TFRecordsDataset
-            self.logger.log("Using full dataset")
-        else:
-            raise ValueError("Invalid dataset_used value in config file")
+        self.dataset = TFRSubsetPartialDataset
+        self.logger.log("Using partial features dataset")
 
     def _get_dataloaders(self):
         self.dataset.initialize_data(self.cfg)

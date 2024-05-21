@@ -1,3 +1,5 @@
+defaults:
+  - base
+
 deeplift:
-  model_path: saved_models/model.pth
   dataset: partial

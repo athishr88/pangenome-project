@@ -1,3 +1,4 @@
 deeplift:
+  explanations_folder: explanations
   model_path: saved_models/model.pth
-  dataset: partial
+  dataset: full
