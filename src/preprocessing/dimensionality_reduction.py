@@ -67,6 +67,7 @@ class TFRSubsetPartialDataset(Dataset):
         super().__init__()
         self.top_n = top_n
         self.split = split
+        self.top_indices = self._get_top_and_bottom_n_indices()
 
     def _get_explanation_filename(self, serotype):
         explanation_dir = self.cfg.explanation.deeplift.explanations_folder
@@ -105,8 +106,8 @@ class TFRSubsetPartialDataset(Dataset):
 
     def _get_X(self, indices, sparse_values):
         """Produces fixed length feature vector of dim=n from indices and sparse values."""
-        feature_vector_len = self.cfg.preprocessing.dataset.highest_index + 1
-        top_indices = self._get_top_and_bottom_n_indices() #TODO change if necessary
+        feature_vector_len = self.cfg.preprocessing.dataset.input_size
+        # top_indices = self._get_top_and_bottom_n_indices() #TODO change if necessary
         X = np.zeros(feature_vector_len)
 
         indices = np.array(indices, dtype=int)
@@ -117,7 +118,9 @@ class TFRSubsetPartialDataset(Dataset):
         else:
             X[indices] = 1.0
 
-        return X[top_indices]   
+        X_filtered = X[self.top_indices]
+
+        return X_filtered 
     
     def _get_y(self, idx):
         filename = self.tfr_sample_names[idx].split('.')[0]

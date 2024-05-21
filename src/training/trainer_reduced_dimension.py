@@ -2,7 +2,7 @@ from preprocessing.dimensionality_reduction import TFRSubsetPartialDataset
 from utils.json_logger import update_metrics
 from torch.utils.data import DataLoader
 from sklearn.metrics import f1_score
-from models.mlp import MLPModel
+from models.mlp import MLPModelReducedFeature
 from utils.logger import Logger
 from utils.cacher import cache
 import torch
@@ -10,17 +10,18 @@ import torch
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class MLPTrainerReducedDimension:
-    def __init__(self, cfg):
+    def __init__(self, cfg, num_top_features):
         self.logger = Logger(cfg)
         self.cfg = cfg
         self.dataset = TFRSubsetPartialDataset
         self.logger.log("Using partial features dataset")
+        self.num_top_features = num_top_features
 
     def _get_dataloaders(self):
         self.dataset.initialize_data(self.cfg)
-        train_dataset = self.dataset.from_split('train')
-        val_dataset = self.dataset.from_split('val')
-        test_dataset = self.dataset.from_split('test')
+        train_dataset = self.dataset.from_split('train', self.num_top_features)
+        val_dataset = self.dataset.from_split('val', self.num_top_features)
+        test_dataset = self.dataset.from_split('test', self.num_top_features)
         train_loader = DataLoader(train_dataset, batch_size=self.cfg.training.hyperparams.batch_size, shuffle=True)
         val_loader = DataLoader(val_dataset, batch_size=self.cfg.training.hyperparams.batch_size, shuffle=False)
         test_loader = DataLoader(test_dataset, batch_size=self.cfg.training.hyperparams.batch_size, shuffle=False)
@@ -29,7 +30,7 @@ class MLPTrainerReducedDimension:
     def train(self):
         self.logger.log("Initializing training")
         train_loader, val_loader, test_loader = self._get_dataloaders()
-        model = MLPModel(self.cfg).to(device)
+        model = MLPModelReducedFeature(self.cfg).to(device)
 
         # Hyperparameters
         lr = self.cfg.training.hyperparams.lr
@@ -45,12 +46,14 @@ class MLPTrainerReducedDimension:
             train_preds, train_targets, total_train_loss = [], [], 0
             model.train()
             for i, (x, y) in enumerate(train_loader):
+                
                 x, y = x.float().to(device), y.long().to(device)
                 optimizer.zero_grad()
                 y_pred = model(x)
                 loss = criterion(y_pred, y)
-                if i % 2 == 0:
+                if i == 2:
                     self.logger.log(f"Train Batch {i}/{len(train_loader)}: Loss: {loss.item()}")
+                    break
                 total_train_loss += loss.item()
                 loss.backward()
                 train_preds.extend(y_pred.argmax(dim=1).cpu().numpy())
@@ -64,6 +67,9 @@ class MLPTrainerReducedDimension:
             test_preds, test_targets, total_test_loss = [], [], 0
             with torch.no_grad():
                 for i, (x, y) in enumerate(val_loader):
+                    if i == 2:
+                        self.logger.log(f"Val Batch {i}/{len(val_loader)}")
+                        break
                     x, y = x.float().to(device), y.long().to(device)
                     y_pred = model(x)
                     val_loss = criterion(y_pred, y)
@@ -79,6 +85,9 @@ class MLPTrainerReducedDimension:
                     torch.save(model.state_dict(), self.cfg.training.model.save_path)
 
                 for i, (x, y) in enumerate(test_loader):
+                    if i == 2:
+                        self.logger.log(f"Test Batch {i}/{len(test_loader)}")
+                        break
                     x, y = x.float().to(device), y.long().to(device)
                     y_pred = model(x)
                     test_loss = criterion(y_pred, y)

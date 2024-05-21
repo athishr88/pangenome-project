@@ -1,7 +1,7 @@
 defaults:
   - utils: base
-  - training: base
-  - model: base
+  - training: explanation
+  - model: explanation
   - logging: base
   - preprocessing: explanation
   - explanation: mlp_partial

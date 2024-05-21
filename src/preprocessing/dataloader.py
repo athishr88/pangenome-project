@@ -92,7 +92,7 @@ class TFRecordsDataset(Dataset):
     
     def _get_X(self, indices, sparse_values):
         """Produces fixed length feature vector from indices and sparse values."""
-        feature_vector_len = self.cfg.preprocessing.dataset.highest_index+1
+        feature_vector_len = self.cfg.preprocessing.dataset.input_size
         X = np.zeros(feature_vector_len)
         indices = np.array(indices, dtype=int)
         if self.cfg.preprocessing.dataset.sparse_vals_used:
@@ -211,7 +211,7 @@ class TFRecordsPartialDataset(Dataset):
     
     def _get_X(self, indices, sparse_values):
         """Produces fixed length feature vector from indices and sparse values."""
-        feature_vector_len = self.cfg.preprocessing.dataset.highest_index+1
+        feature_vector_len = self.cfg.preprocessing.dataset.input_size
         X = np.zeros(feature_vector_len)
         indices = np.array(indices, dtype=int)
         if self.cfg.preprocessing.dataset.sparse_vals_used:
@@ -249,7 +249,7 @@ class TFRecordsPartialDataset(Dataset):
         y = self._get_y(actual_idx)
         return X, y
     
-class TempSingleClassDataset(Dataset):
+class SingleClassDataset(Dataset):
     def __init__(self, cfg, serotype) -> None:
         super().__init__()
         self.cfg = cfg
@@ -296,7 +296,7 @@ class TempSingleClassDataset(Dataset):
     
     def _get_X(self, indices, sparse_values):
         """Produces fixed length feature vector from indices and sparse values."""
-        feature_vector_len = self.cfg.preprocessing.dataset.highest_index+1
+        feature_vector_len = self.cfg.preprocessing.dataset.input_size
         X = np.zeros(feature_vector_len)
         indices = np.array(indices, dtype=int)
         if self.cfg.preprocessing.dataset.sparse_vals_used:
