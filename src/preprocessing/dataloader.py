@@ -253,10 +253,15 @@ class SingleClassDataset(Dataset):
     def __init__(self, cfg, serotype) -> None:
         super().__init__()
         self.cfg = cfg
+        self._y_map = None
         self.serotype = serotype
         self.sample_names_to_zipfile_map = {}
         self.tfr_sample_names = self._get_tfr_sample_names()
         self.indices = self._get_indices()
+
+    @property
+    def y_map(self):
+        return self._y_map
 
     def _get_tfr_sample_names(self):
         y_file = self.cfg.preprocessing.dataset.serotype_file_path
@@ -272,6 +277,7 @@ class SingleClassDataset(Dataset):
         le = LabelEncoder()
         df_filtered['serotype_encoded'] = le.fit_transform(df_filtered['Serotype'])
         self.tfr_sample_ys_df = df_filtered
+        self._y_map = {class_label:index for index, class_label in enumerate(le.classes_)}
         return tfr_filenames
     
     def _get_indices(self):

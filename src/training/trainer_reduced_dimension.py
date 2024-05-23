@@ -14,7 +14,7 @@ class MLPTrainerReducedDimension:
         self.logger = Logger(cfg)
         self.cfg = cfg
         self.dataset = TFRSubsetPartialDataset
-        self.logger.log("Using partial features dataset")
+        self.logger.log("Using partial FEATURES dataset")
         self.num_top_features = num_top_features
 
     def _get_dataloaders(self):
@@ -46,14 +46,13 @@ class MLPTrainerReducedDimension:
             train_preds, train_targets, total_train_loss = [], [], 0
             model.train()
             for i, (x, y) in enumerate(train_loader):
+                if i % 200 == 0:
+                    self.logger.log(f"Train Batch {i}/{len(train_loader)}")
                 
                 x, y = x.float().to(device), y.long().to(device)
                 optimizer.zero_grad()
                 y_pred = model(x)
                 loss = criterion(y_pred, y)
-                if i == 2:
-                    self.logger.log(f"Train Batch {i}/{len(train_loader)}: Loss: {loss.item()}")
-                    break
                 total_train_loss += loss.item()
                 loss.backward()
                 train_preds.extend(y_pred.argmax(dim=1).cpu().numpy())
@@ -67,9 +66,9 @@ class MLPTrainerReducedDimension:
             test_preds, test_targets, total_test_loss = [], [], 0
             with torch.no_grad():
                 for i, (x, y) in enumerate(val_loader):
-                    if i == 2:
+                    if i % 10 == 0:
                         self.logger.log(f"Val Batch {i}/{len(val_loader)}")
-                        break
+                    
                     x, y = x.float().to(device), y.long().to(device)
                     y_pred = model(x)
                     val_loss = criterion(y_pred, y)
@@ -85,9 +84,8 @@ class MLPTrainerReducedDimension:
                     torch.save(model.state_dict(), self.cfg.training.model.save_path)
 
                 for i, (x, y) in enumerate(test_loader):
-                    if i == 2:
-                        self.logger.log(f"Test Batch {i}/{len(test_loader)}")
-                        break
+                    if i % 10 == 0:
+                        self.logger.log(f"Test Batch {i}/{len(val_loader)}")
                     x, y = x.float().to(device), y.long().to(device)
                     y_pred = model(x)
                     test_loss = criterion(y_pred, y)

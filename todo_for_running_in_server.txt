@@ -1,1 +1,6 @@
-todo
+1. Change configs/preprocessing/base
+
+zip_path: /home/ShareDirectory/Adam_Project/TF_Extracted/TFRecord_to_sample
+serotype_file_path: /home/ShareDirectory/Adam_Project/TF_Extracted/SRA_Serotype_file.csv
+
+2. mkdir saved_models in the root folder
