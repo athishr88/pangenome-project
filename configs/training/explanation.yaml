@@ -3,11 +3,7 @@ defaults:
   
 explanation:
   num_top_features:
-    - 5
-    - 10
-    - 20
-    - 40
-    - 100
+    - 500
   
   
   
