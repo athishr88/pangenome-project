@@ -4,3 +4,9 @@ zip_path: /home/ShareDirectory/Adam_Project/TF_Extracted/TFRecord_to_sample
 serotype_file_path: /home/ShareDirectory/Adam_Project/TF_Extracted/SRA_Serotype_file.csv
 
 2. mkdir saved_models in the root folder
+
+3. Change configs/primer_functions/base
+fin150_30_3: ./data/GoodPosForPrimer/fin150_30_3.pkl 
+fin150_40_3: ./data/GoodPosForPrimer/150_40_3.pkl
+fin500_30_3: ./data/GoodPosForPrimer/fin500_30_3.pkl
+fin500_40_3: ./data/GoodPosForPrimer/fin500_40_3.pkl
