@@ -1,7 +1,7 @@
 dataset:
   dataset_used: full
-  zip_path: /home/ShareDirectory/Adam_Project/TF_Extracted/TFRecord_to_sample
-  serotype_file_path: /home/ShareDirectory/Adam_Project/TF_Extracted/SRA_Serotype_file.csv
+  zip_path: ./data/tfrecord_to_sample
+  serotype_file_path: ./data/SRA_Serotype_file.csv
   input_size: 236071 #236068
   lowest_index: 0
   num_classes: 2054

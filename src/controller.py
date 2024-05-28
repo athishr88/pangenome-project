@@ -1,6 +1,7 @@
 from training.trainer_reduced_dimension import MLPTrainerReducedDimension
 from primer_functions.primer_utils import PrimerSegmentSearch
 from postprocessing.explainer import DeepLiftExplainerPartialDataset
+from preprocessing.generate_dataset import BestFeaturesDataset
 from utils.pangenome_graph_utils import get_sequence_map
 from preprocessing.dataloader import TFRecordsDataset
 from training.trainer import MLPTrainer
@@ -45,3 +46,8 @@ class Controller:
     def get_primer_sites(self, cfg):
         pss = PrimerSegmentSearch(cfg)
         pss.get_primer_site_for_all_serotypes()
+
+    def generate_new_dataset(self, cfg):
+        best_n = cfg.preprocessing.dimensionality_reduction.best_n
+        dataset = BestFeaturesDataset(cfg, best_n)
+        dataset.generate_dataset()

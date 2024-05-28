@@ -15,3 +15,6 @@ dataset:
     - Kentucky
     - Montevideo
     - Saintpaul
+    
+dimensionality_reduction:
+  best_n: 200
