@@ -6,6 +6,7 @@ from utils.pangenome_graph_utils import get_sequence_map
 from preprocessing.dataloader import TFRecordsDataset
 from training.trainer import MLPTrainer
 from utils.logger import Logger
+from utils.dataset_utils import create_pickled_dataset
 
 class Controller:
     """Controller contains all individual services and 
@@ -51,3 +52,6 @@ class Controller:
         best_n = cfg.preprocessing.dimensionality_reduction.best_n
         dataset = BestFeaturesDataset(cfg, best_n)
         dataset.generate_dataset()
+
+    def create_pickled_dataset(self, cfg):
+        create_pickled_dataset(cfg)

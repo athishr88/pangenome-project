@@ -9,3 +9,6 @@ logs/mlp_train_log.log
 output.out
 saved_models/
 ./best_features_dataset/
+src/models/__pycache__/mlp.cpython-312.pyc
+logs/mlp_train_log_old1.log
+moses.ipynb
