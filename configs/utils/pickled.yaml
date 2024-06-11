@@ -1,4 +1,0 @@
-locations:
-  tfr_samples_folder: /home/athishramdas/Desktop/Pangenome/pangenome-project/data/tfrecord_to_sample
-  serotype_file: /home/athishramdas/Desktop/Pangenome/pangenome-project/data/SRA_Serotype_file.csv
-  out_folder: /media/athishramdas/data/Pangenome-archive/pickled_dataclasses

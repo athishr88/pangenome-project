@@ -5,7 +5,9 @@ from sklearn.metrics import f1_score
 from models.mlp import MLPModel
 from utils.logger import Logger
 from utils.cacher import cache
+import pandas as pd
 import torch
+import os
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -14,9 +16,11 @@ class MLPTrainer:
     def __init__(self, cfg):
         self.logger = Logger(cfg)
         self.cfg = cfg
+        self._create_directories()
 
         # Check if full or partial dataset is used
         if cfg.preprocessing.dataset.dataset_used == 'partial':
+            self._config_files_prepare()
             self.dataset = TFRecordsPartialDataset
             self.logger.log("Using partial dataset")
         elif cfg.preprocessing.dataset.dataset_used == 'full':
@@ -24,6 +28,20 @@ class MLPTrainer:
             self.logger.log("Using full dataset")
         else:
             raise ValueError("Invalid dataset_used value in config file")
+    
+    def _create_directories(self):
+        model_save_path = self.cfg.training.model.save_model_dir
+        os.makedirs(model_save_path, exist_ok=True)
+
+    def _config_files_prepare(self):
+        y_file = self.cfg.preprocessing.dataset.serotype_file_path
+        df = pd.read_csv(y_file)
+        # Remove the rows in which the Serotype value is 0
+        df = df[df['Serotype'] != '0']
+        top_n = self.cfg.preprocessing.dataset.top_n
+        top_serotypes = df['Serotype'].value_counts().head(top_n).index.tolist()
+        self.cfg.preprocessing.dataset.classes = top_serotypes
+        self.logger.log(f"Top {top_n} serotypes: {top_serotypes}")
 
     def _get_dataloaders(self):
         self.dataset.initialize_data(self.cfg)

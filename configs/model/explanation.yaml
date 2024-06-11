@@ -1,5 +1,0 @@
-defaults:
-  - base
-  
-model_params:
-  input_dim: None

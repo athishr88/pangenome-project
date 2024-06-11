@@ -1,9 +1,0 @@
-defaults:
-  - base
-  
-explanation:
-  num_top_features:
-    - 500
-  
-  
-  

@@ -1,5 +1,0 @@
-defaults:
-  - base
-
-deeplift:
-  dataset: partial
