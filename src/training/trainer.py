@@ -1,4 +1,4 @@
-from preprocessing.dataloader import TFRecordsDataset, TFRecordsPartialDataset
+from preprocessing.dataloader import TFRecordsPartialDataset
 from utils.json_logger import update_metrics
 from torch.utils.data import DataLoader
 from sklearn.metrics import f1_score
@@ -78,6 +78,7 @@ class MLPTrainer:
                 loss = criterion(y_pred, y)
                 if i % 2 == 0:
                     self.logger.log(f"Train Batch {i}/{len(train_loader)}: Loss: {loss.item()}")
+
                 total_train_loss += loss.item()
                 loss.backward()
                 train_preds.extend(y_pred.argmax(dim=1).cpu().numpy())

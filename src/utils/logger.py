@@ -17,5 +17,5 @@ class Logger:
         passed_time = (write_time - self.start_time) / 3600.00
         with open(filename, 'a') as f:
             f.write(message)
-            f.write(f'\t Time passed : {passed_time} hours')
+            f.write(f'\t | Time passed : {passed_time} hours')
             f.write('\n')

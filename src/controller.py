@@ -1,12 +1,6 @@
-from training.trainer_reduced_dimension import MLPTrainerReducedDimension
-from primer_functions.primer_utils import PrimerSegmentSearch
-from postprocessing.explainer import DeepLiftExplainerPartialDataset
-from preprocessing.generate_dataset import BestFeaturesDataset
-from utils.pangenome_graph_utils import get_sequence_map
-from preprocessing.dataloader import TFRecordsDataset
 from training.trainer import MLPTrainer
 from utils.logger import Logger
-from utils.dataset_utils import create_pickled_dataset
+import time
 
 class Controller:
     """Controller contains all individual services and 
@@ -17,15 +11,18 @@ class Controller:
     def get_sequence_map(self, config):
         return get_sequence_map(config)
     
-    def get_dataset(self, cfg):
-        TFRecordsDataset.initialize_data(cfg)
-        train_dataset = TFRecordsDataset.from_split('train')
-        val_dataset = TFRecordsDataset.from_split('val')
-        test_dataset = TFRecordsDataset.from_split('test')
+    # def get_dataset(self, cfg):
+    #     TFRecordsDataset.initialize_data(cfg)
+    #     train_dataset = TFRecordsDataset.from_split('train')
+    #     val_dataset = TFRecordsDataset.from_split('val')
+    #     test_dataset = TFRecordsDataset.from_split('test')
 
-        return train_dataset, val_dataset, test_dataset
+    #     return train_dataset, val_dataset, test_dataset
     
     def train_mlp(self, cfg):
+        logger = Logger(cfg)
+        time_now = time.strftime("%Y%m%d-%H%M%S")
+        logger.log(f"Initializing training at {time_now}")
         trainer = MLPTrainer(cfg)
         trainer.train()
 
