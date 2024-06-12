@@ -1,4 +1,4 @@
-from preprocessing.dataloader import TFRecordsPartialDataset
+from preprocessing.dataloader import TFRecordsPartialDatasetDataclass
 from utils.json_logger import update_metrics
 from torch.utils.data import DataLoader
 from sklearn.metrics import f1_score
@@ -21,7 +21,8 @@ class MLPTrainer:
         # Check if full or partial dataset is used
         if cfg.preprocessing.dataset.dataset_used == 'partial':
             self._config_files_prepare()
-            self.dataset = TFRecordsPartialDataset
+            # self.dataset = TFRecordsPartialDataset
+            self.dataset = TFRecordsPartialDatasetDataclass
             self.logger.log("Using partial dataset")
         elif cfg.preprocessing.dataset.dataset_used == 'full':
             self.dataset = TFRecordsDataset
