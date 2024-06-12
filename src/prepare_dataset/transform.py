@@ -97,8 +97,13 @@ def create_pickled_dataset(cfg):
             file_names = zip_ref.namelist()
             for file_name in file_names:
                 i += 1
+                sample_name = file_name.split('.')[0]
+                out_filename = os.path.join(out_folder, sample_name + '.pkl')
+                
+                if os.path.exists(out_filename):
+                    continue
+                
                 with zip_ref.open(file_name) as file:
-                    sample_name = file_name.split('.')[0]
                     tfr_indices = file.readline().decode('utf-8').strip().split(',')
                     tfr_indices = [int(i) for i in tfr_indices]
                     tfr_indices = np.array(tfr_indices, dtype='uint32')
@@ -116,12 +121,12 @@ def create_pickled_dataset(cfg):
 
                     sample = Sample(sample_name, tfr_indices, sparse_vals, serotype_encoded)
 
-                    with open(os.path.join(out_folder, sample_name + '.pkl'), 'wb') as f:
+                    with open(os.path.join(out_filename), 'wb') as f:
                         pickle.dump(sample, f)
                     serotype = serotype_df.loc[sample_name, 'Serotype']
 
-
                 if i % 1000 == 0:
                     print(f"{i}/{total}")
+                
 
                 
