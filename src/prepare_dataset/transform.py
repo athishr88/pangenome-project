@@ -77,9 +77,16 @@ def create_pickled_dataset(cfg):
 
     os.makedirs(out_folder, exist_ok=True)
 
-    serotype_df = pd.read_csv(serotype_file, index_col=0)
+    # if serotype_mapping_dict_file = cfg.utils.prepare_dataset.serotype_mapping_pickle path exists run line
+
+    if not os.path.exists(serotype_mapping_dict_file):
+        create_serotype_mapping(cfg)
+    
     with open(serotype_mapping_dict_file, 'rb') as f:
         serotype_mapping = pickle.load(f)
+
+    serotype_df = pd.read_csv(serotype_file, index_col=0)
+    
 
     i = 0
     total = 530000
