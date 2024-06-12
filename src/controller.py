@@ -1,3 +1,4 @@
+from prepare_dataset.transform import create_serotype_mapping, create_pickled_dataset
 from training.trainer import MLPTrainer
 from utils.logger import Logger
 import time
@@ -52,3 +53,6 @@ class Controller:
 
     def create_pickled_dataset(self, cfg):
         create_pickled_dataset(cfg)
+
+    def create_serotype_mapping(self, cfg):
+        create_serotype_mapping(cfg)
