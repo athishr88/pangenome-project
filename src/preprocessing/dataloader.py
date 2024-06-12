@@ -1,4 +1,5 @@
 import os
+import pickle
 import zipfile
 import numpy as np
 import pandas as pd
@@ -133,4 +134,91 @@ class TFRecordsPartialDataset(Dataset):
         indices, sparse_values = self._indices_and_sparse_vals(actual_idx)
         X = self._get_X(indices, sparse_values)
         y = self._get_y(actual_idx)
+        return X, y
+    
+
+class TFRecordsPartialDatasetDataclass(Dataset):
+    data_initialized = False
+
+    @classmethod
+    def initialize_data(cls, cfg):
+        if not cls.data_initialized:
+            cls.logger = Logger(cfg)
+
+            cls.cfg = cfg
+            cls.classes = cfg.preprocessing.dataset.classes
+            cls.train_samples, cls.val_samples, cls.test_samples = cls._get_train_val_test_samples()
+            cls.data_initialized = True
+            
+    @classmethod
+    def _get_train_val_test_samples(cls):
+        y_file = cls.cfg.preprocessing.dataset.serotype_file_path
+        df = pd.read_csv(y_file)
+        df_filtered = df[df['Serotype'].isin(cls.classes)]
+        tfr_filenames_stem = df_filtered['SRA_ACCESSION_NUMBER'].values
+        tfr_filenames = [f'{name}.pkl' for name in tfr_filenames_stem]
+
+        val_size = cls.cfg.preprocessing.dataset.val_size
+        test_size = cls.cfg.preprocessing.dataset.test_size
+        random_state = cls.cfg.preprocessing.dataset.random_state
+
+        temp_train_samples, test_samples = train_test_split(
+            tfr_filenames, test_size=test_size, random_state=random_state
+        )
+        val_size_adjusted = val_size / (1 - test_size)
+        train_samples, val_samples = train_test_split(
+            temp_train_samples, test_size=val_size_adjusted, random_state=random_state
+        )
+        return train_samples, val_samples, test_samples
+    
+    @classmethod
+    def from_split(cls, split):
+        instance = cls(split)
+        return instance
+    
+    def __init__(self, split):
+        """
+        @param cfg: Config object
+        @param split: str, {'train', 'val' or 'test'}
+        """
+        if not self.data_initialized:
+            raise ValueError("Data has not been initialized. Call 'initialize_data' first.")
+        super().__init__()
+        self.split = split
+
+
+    def _get_X(self, indices, sparse_values):
+        """Produces fixed length feature vector from indices and sparse values."""
+        feature_vector_len = self.cfg.preprocessing.dataset.input_size
+        X = np.zeros(feature_vector_len)
+        if self.cfg.preprocessing.dataset.sparse_vals_used:
+            sparse_values = np.array(sparse_values, dtype=float)
+            X[indices] = sparse_values
+        else:
+            X[indices] = 1.0
+        return X
+
+    def __len__(self):
+        if self.split == 'train':
+            return len(self.train_samples)
+        elif self.split == 'val':
+            return len(self.val_samples)
+        else:
+            return len(self.test_samples)
+        
+    def __getitem__(self, idx):
+        if self.split == 'train':
+            sample_name = self.train_samples[idx]
+        elif self.split == 'val':
+            sample_name = self.val_samples[idx]
+        else:
+            sample_name = self.test_samples[idx]
+
+        dataclass_folder = self.cfg.utils.prepare_dataset.dataclass_out_folder_full
+        
+        with open(os.path.join(dataclass_folder, sample_name), 'rb') as f:
+            sample = pickle.load(f)
+
+        X = self._get_X(sample.indices, sample.sparse_vals)
+        y = sample.serotype
         return X, y
