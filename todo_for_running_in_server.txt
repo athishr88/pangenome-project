@@ -15,3 +15,6 @@ fin150_30_3: ./data/GoodPosForPrimer/fin150_30_3.pkl
 fin150_40_3: ./data/GoodPosForPrimer/150_40_3.pkl
 fin500_30_3: ./data/GoodPosForPrimer/fin500_30_3.pkl
 fin500_40_3: ./data/GoodPosForPrimer/fin500_40_3.pkl
+
+4. Change the configs/utils/base.yaml
+dataclass_out_folder_full: /data/Athish/pangenome-project/pickled_dataset/full

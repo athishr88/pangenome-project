@@ -148,8 +148,21 @@ class TFRecordsPartialDatasetDataclass(Dataset):
             cls.cfg = cfg
             cls.classes = cfg.preprocessing.dataset.classes
             cls.train_samples, cls.val_samples, cls.test_samples = cls._get_train_val_test_samples()
+            cls.class_weights = cls._calculate_class_weights()
             cls.data_initialized = True
-            
+
+    @classmethod
+    def _calculate_class_weights(cls):
+        y_file = cls.cfg.preprocessing.dataset.serotype_file_path
+        df = pd.read_csv(y_file)
+        df_filtered = df[df['Serotype'].isin(cls.classes)]
+        class_weights = df_filtered['Serotype'].value_counts(normalize=True).sort_index()
+        class_weights = class_weights.sort_values(ascending=False)
+        class_weights = 1/class_weights
+        class_weights = class_weights / class_weights.sum()
+        class_weights = class_weights.values
+        return class_weights
+
     @classmethod
     def _get_train_val_test_samples(cls):
         y_file = cls.cfg.preprocessing.dataset.serotype_file_path

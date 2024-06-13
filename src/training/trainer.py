@@ -57,12 +57,14 @@ class MLPTrainer:
     def train(self):
         self.logger.log("Initializing training")
         train_loader, val_loader, test_loader = self._get_dataloaders()
+        class_weights = self.dataset.class_weights
+        class_weights = torch.tensor(class_weights, dtype=torch.float).to(device)
         model = MLPModel(self.cfg).to(device)
 
         # Hyperparameters
         lr = self.cfg.training.hyperparams.lr
         optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-        criterion = torch.nn.CrossEntropyLoss()
+        criterion = torch.nn.CrossEntropyLoss(weight=class_weights)
         num_epochs = self.cfg.training.hyperparams.num_epochs
 
         best_val_f1 = 0
@@ -77,7 +79,7 @@ class MLPTrainer:
                 optimizer.zero_grad()
                 y_pred = model(x)
                 loss = criterion(y_pred, y)
-                if i % 2 == 0:
+                if i % 50 == 0:
                     self.logger.log(f"Train Batch {i}/{len(train_loader)}: Loss: {loss.item()}")
 
                 total_train_loss += loss.item()
