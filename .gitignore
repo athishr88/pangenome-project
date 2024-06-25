@@ -13,3 +13,6 @@ src/models/__pycache__/mlp.cpython-312.pyc
 logs/mlp_train_log_old1.log
 moses.ipynb
 logs/
+best_features_dataclass/
+explanations/
+nohup.out

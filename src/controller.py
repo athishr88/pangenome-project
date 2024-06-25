@@ -1,6 +1,9 @@
-from prepare_dataset.transform import create_serotype_mapping, create_pickled_dataset
+# from prepare_dataset.all_indices_dataset import create_serotype_mapping, create_pickled_dataset
 from training.trainer import MLPTrainer
+from postprocessing.explainer import DeepLiftExplainerPartialDataset
+from prepare_dataset.best_indices_dataset import BestFeaturesDataclassDataset
 from utils.logger import Logger
+from preprocessing.dataloader import SingleClassDatasetDataclass
 import time
 
 class Controller:
@@ -56,3 +59,11 @@ class Controller:
 
     def create_serotype_mapping(self, cfg):
         create_serotype_mapping(cfg)
+
+    def create_best_indices_dataset(self, cfg):
+        dataset = BestFeaturesDataclassDataset(cfg, 97)
+        dataset.generate_dataset()
+
+    def random_test(self, cfg):
+        dataset = SingleClassDatasetDataclass(cfg, 'Typhimurium')
+        print(dataset[0])

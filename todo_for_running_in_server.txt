@@ -18,3 +18,6 @@ fin500_40_3: ./data/GoodPosForPrimer/fin500_40_3.pkl
 
 4. Change the configs/utils/base.yaml
 dataclass_out_folder_full: /data/Athish/pangenome-project/pickled_dataset/full
+
+5. Change configs/best_features_dataset/base.yaml
+best_features_in_file: ***
