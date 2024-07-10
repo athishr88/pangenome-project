@@ -1,4 +1,4 @@
 dataset:
   out_folder: best_features_dataset
   dataclass_out_folder: best_features_dataclass
-  best_features_in_file: data/best_indices/RF_Important_600_Indices.txt
+  best_features_in_file: results/best_indices_top_97/RF_Important_8times_Indices.txt

@@ -32,6 +32,7 @@ class DeepLiftExplainerPartialDataset:
         df = pd.read_csv(y_file)
         # Remove the rows in which the Serotype value is 0
         df = df[df['Serotype'] != '0']
+        df = df[df['Serotype'] != '---']
         top_n = self.cfg.preprocessing.dataset.top_n
         top_serotypes = df['Serotype'].value_counts().head(top_n).index.tolist()
         self.cfg.preprocessing.dataset.classes = top_serotypes

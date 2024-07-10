@@ -16,3 +16,4 @@ logs/
 best_features_dataclass/
 explanations/
 nohup.out
+results/

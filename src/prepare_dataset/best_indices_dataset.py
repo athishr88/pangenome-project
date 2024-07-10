@@ -25,7 +25,7 @@ class BestFeaturesDataclassDataset:
         
         self.tfr_sample_names = self._get_tfr_sample_names() #[SRR12345.csv, SRR67890.csv, ... (~300000 or more)]
         
-        self.write_to_file = False #TODO Change to True
+        self.write_to_file = True #TODO Change to True
 
         self.create_headers()
 
@@ -147,7 +147,7 @@ class BestFeaturesDataclassDataset:
             X_filtered = self._get_X(X, sparse_vals)
             y = self._get_y(idx)
             if self.write_to_file:
-                with open(os.path.join(out_folder, f'best_{self.num_top_serotypes}_dataset_faster.txt'), 'a') as f:
+                with open(os.path.join(out_folder, f'best_{self.num_top_serotypes}_dataset.txt'), 'a') as f:
                     f.write(f'{sample_id}, ')
                     for val in X_filtered:
                         f.write(f'{val}, ')
