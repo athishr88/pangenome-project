@@ -1,9 +1,13 @@
 # from prepare_dataset.all_indices_dataset import create_serotype_mapping, create_pickled_dataset
-from training.trainer import MLPTrainer
-from postprocessing.explainer import DeepLiftExplainerPartialDataset
+from training.trainer import MLPTrainer, MLPTrainerBestFeatures, TransformerTrainer, MLPTrainerFilteredFeatures, TransformerTrainerVocab3
+from training.trainer import TransformerTrainerWindowed
+from postprocessing.explainer import DeepLiftExplainerPartialDataset, DeepLiftExplainerFiltered
 from prepare_dataset.best_indices_dataset import BestFeaturesDataclassDataset
+from prepare_dataset.windowed_dataset import WindowedDataset, Sample
 from utils.logger import Logger
 from preprocessing.dataloader import SingleClassDatasetDataclass
+from utils.f1_utils import ConfusionMatrixGenerator
+import pandas as pd
 import time
 
 class Controller:
@@ -12,8 +16,8 @@ class Controller:
     def __init__(self) -> None:
         pass
 
-    def get_sequence_map(self, config):
-        return get_sequence_map(config)
+    # def get_sequence_map(self, config):
+    #     return get_sequence_map(config)
     
     # def get_dataset(self, cfg):
     #     TFRecordsDataset.initialize_data(cfg)
@@ -34,36 +38,61 @@ class Controller:
         explainer = DeepLiftExplainerPartialDataset(cfg)
         explainer.explain_test()
 
-    def train_with_top_features(self, cfg):
-        logger = Logger(cfg)
-        top_features_choices = cfg.training.explanation.num_top_features
-        num_classes = cfg.preprocessing.dataset.num_classes
-        for num_top_features in top_features_choices:
-            cfg.model.model_params.input_dim = 2*num_top_features*num_classes
-            print(cfg.model.model_params.input_dim)
-            logger.log(f"Training with top {num_top_features} features")
-            trainer = MLPTrainerReducedDimension(cfg, num_top_features)
-            trainer.train()
+    def train_with_best_features(self, cfg):
+        trainer = MLPTrainerBestFeatures(cfg)
+        trainer.train()
+
+    def generate_confusion_matrix(self, cfg):
+        cfg.preprocessing.dataset.input_size = 14692
+        cmg = ConfusionMatrixGenerator(cfg)
+        cm = cmg.generate_confusion_matrix()
+        classes = cfg.preprocessing.dataset.classes
+        df = pd.DataFrame(cm, columns=classes, index=classes)
+        df.to_excel('results/best_indices_top_97/confusion_matrix.xlsx')
+
+    def train_transformer_model(self, cfg):
+        trainer = TransformerTrainer(cfg)
+        trainer.train()
+
+    def train_transformer_model_vocab3(self, cfg):
+        trainer = TransformerTrainerVocab3(cfg)
+        trainer.train()
+
+    def create_windowed_dataset(self, cfg):
+        dataset = WindowedDataset(cfg)
+        dataset.create_windowed_dataset()
     
-    def get_primer_sites(self, cfg):
-        pss = PrimerSegmentSearch(cfg)
-        pss.get_primer_site_for_all_serotypes()
+    def train_windowed_transformer_model(self, cfg):
+        trainer = TransformerTrainerWindowed(cfg)
+        trainer.train()
 
-    def generate_new_dataset(self, cfg):
-        best_n = cfg.preprocessing.dimensionality_reduction.best_n
-        dataset = BestFeaturesDataset(cfg, best_n)
-        dataset.generate_dataset()
+    def train_filtered_indices_mlp(self, cfg):
+        trainer = MLPTrainerFilteredFeatures(cfg)
+        trainer.train()
 
-    def create_pickled_dataset(self, cfg):
-        create_pickled_dataset(cfg)
+    def explain_filtered_model(self, cfg):
+        explainer = DeepLiftExplainerFiltered(cfg)
+        explainer.explain_test()
 
-    def create_serotype_mapping(self, cfg):
-        create_serotype_mapping(cfg)
+    def train_filtered_with_best_features(self, cfg):
+        trainer = MLPTrainerBestFeatures(cfg)
+        trainer.train()
 
-    def create_best_indices_dataset(self, cfg):
-        dataset = BestFeaturesDataclassDataset(cfg, 97)
-        dataset.generate_dataset()
+    def generate_confusion_matrix_filtered(self, cfg):
+        cfg.preprocessing.dataset.input_size = 3915
+        cmg = ConfusionMatrixGenerator(cfg)
+        cm = cmg.generate_confusion_matrix()
+        classes = cfg.preprocessing.dataset.classes
+        df = pd.DataFrame(cm, columns=classes, index=classes)
+        df.to_excel('results/best_indices_filtered/confusion_matrix.xlsx')
 
-    def random_test(self, cfg):
-        dataset = SingleClassDatasetDataclass(cfg, 'Typhimurium')
-        print(dataset[0])
+    # def create_serotype_mapping(self, cfg):
+    #     create_serotype_mapping(cfg)
+
+    # def create_best_indices_dataset(self, cfg):
+    #     dataset = BestFeaturesDataclassDataset(cfg, 97)
+    #     dataset.generate_dataset()
+
+    # def random_test(self, cfg):
+    #     dataset = SingleClassDatasetDataclass(cfg, 'Typhimurium')
+    #     print(dataset[0])

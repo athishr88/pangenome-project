@@ -40,6 +40,8 @@ class BestFeaturesDataclassDataset:
         
         if '0' in serotype_descending:
             serotype_descending.remove('0')
+        if '---' in serotype_descending:
+            serotype_descending.remove('---')
         
         top_serotypes = serotype_descending[:self.num_top_serotypes]
 
@@ -92,7 +94,7 @@ class BestFeaturesDataclassDataset:
     
     def _get_X(self, indices, sparse_values):
         """Produces fixed length feature vector of dim=n from indices and sparse values."""
-        feature_vector_len = self.cfg.preprocessing.dataset.input_size #230000
+        feature_vector_len = 236071 #230000
         X = np.zeros(feature_vector_len) #[1, 230000]
 
         indices = np.array(indices, dtype=int)

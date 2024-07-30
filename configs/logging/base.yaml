@@ -1,4 +1,4 @@
 train:
   log_dir: logs
-  logfile: logs/mlp_train_log_test.log
+  logfile: logs/mlp_explanation.log
   train_history: logs/mlp_loss_history.json

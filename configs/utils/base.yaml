@@ -11,4 +11,4 @@ xai:
 prepare_dataset:
   serotype_mapping_file: ./cache/dataclass/metadata/serotype_mapping.txt
   serotype_mapping_pickle: ./cache/dataclass/metadata/serotype_mapping.pkl
-  dataclass_out_folder_full: /media/athishramdas/data/Pangenome-archive/dataclass_dataset/full
+  dataclass_out_folder_full: /media/athishramdas/data/Pangenome-archive/tf_records_dataclass

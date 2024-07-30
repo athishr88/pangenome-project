@@ -1,7 +1,7 @@
 dataset:
   out_folder: best_features_dataset
   dataclass_out_folder: best_features_dataclass
-  best_features_in_file: results/best_indices_top_97/RF_Important_2times_Indices.txt
+  best_features_in_file: /home/athishramdas/Desktop/Pangenome/pangenome-project/results/best_indices_filtered/RF_Important_Indices.txt
   
 windowed:
   selected_windows_file: input_data/best_contigs_windows/best_contigs_windows_150.txt

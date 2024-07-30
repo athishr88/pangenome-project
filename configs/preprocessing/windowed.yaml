@@ -1,0 +1,11 @@
+defaults:
+  - base
+  
+dataset:
+  top_n: 97
+  num_classes: 97
+  dataset_used: partial
+  classes: None
+  windowed_data_dir: /media/athishramdas/data/Pangenome-archive/windowed_dataset
+  window_size: 34
+  normalizer_val: 236071

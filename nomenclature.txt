@@ -1,3 +1,0 @@
-Each of the 539285 TFRecord file: tfr_sample
-100 reference genomes: Reference genome samples
-539285 genome samples: tfr_samples

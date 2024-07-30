@@ -1,0 +1,8 @@
+defaults:
+  - utils: base
+  - preprocessing: best_8
+  - training: best_8
+  - model: base
+  - logging: best_8
+  - explanation: base
+  - best_features_dataset: base

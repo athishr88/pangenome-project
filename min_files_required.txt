@@ -1,2 +1,0 @@
-MosesFiles/TF_Extracted/TFRecord_to_sample
-MosesFiles/TF_Extracted/SRA_Serotype_file.csv

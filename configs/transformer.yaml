@@ -1,0 +1,7 @@
+defaults:
+  - utils: best4
+  - preprocessing: top_97
+  - training: transformer
+  - model: transformer
+  - logging: transformer
+  - explanation: base

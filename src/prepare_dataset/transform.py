@@ -14,6 +14,8 @@ def create_serotype_mapping(cfg):
     
     if '0' in serotype_descending:
         serotype_descending.remove('0')
+    if '---' in serotype_descending:
+        serotype_descending.remove('---')
     
     serotype_mapping = {serotype: i for i, serotype in enumerate(serotype_descending)}
     

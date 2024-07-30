@@ -1,0 +1,4 @@
+train:
+  log_dir: logs
+  logfile: logs/transformer.log
+  train_history: logs/transformer_loss_history.json

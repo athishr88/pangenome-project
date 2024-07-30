@@ -1,0 +1,7 @@
+defaults:
+  - utils: best4
+  - preprocessing: top_97
+  - training: vocab3
+  - model: transformer
+  - logging: vocab3
+  - explanation: base

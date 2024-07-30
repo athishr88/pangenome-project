@@ -1,0 +1,8 @@
+defaults:
+  - utils: base
+  - preprocessing: windowed
+  - training: windowed
+  - model: windowed
+  - logging: windowed
+  - explanation: base
+  - best_features_dataset: base
