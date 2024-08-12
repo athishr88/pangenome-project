@@ -1,0 +1,4 @@
+deeplift:
+  explanations_folder: explanations
+  model_path: saved_models/model_97_new.pth
+  dataset: full

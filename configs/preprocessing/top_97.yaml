@@ -1,0 +1,8 @@
+defaults:
+  - base
+  
+dataset:
+  top_n: 97
+  num_classes: 97
+  dataset_used: partial
+  classes: None

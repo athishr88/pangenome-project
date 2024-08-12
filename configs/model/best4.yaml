@@ -1,0 +1,5 @@
+model_params:
+  hidden_size: 128
+  num_hid_layers: 3
+  dropout_val: 0.1
+  batch_norm: True
