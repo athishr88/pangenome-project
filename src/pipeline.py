@@ -1,7 +1,7 @@
 from controller import Controller
 import os
 
-class Pipeline:
+class ExcludedIndicesPipeline:
     def __init__(self, cfg) -> None:
         self.cfg = cfg
         self.cleanup_previous_files(cfg)
@@ -9,7 +9,7 @@ class Pipeline:
         self.edit_config_files(cfg)
 
     def cleanup_previous_files(self, cfg):
-        dataclass_out_folder = cfg.file_paths.new_dataset.out_folder
+        dataclass_out_folder = cfg.file_paths.best_features_dataset.out_folder
         # Delete the folder
         os.system(f"rm -r {dataclass_out_folder}")
 
@@ -28,8 +28,24 @@ class Pipeline:
         self.controller.train_filtered_with_best_features(cfg)
         self.controller.generate_confusion_matrix_filtered(cfg)
 
+
+# class CorrelationFilteredPipeline:
+#     def __init__(self, cfg) -> None:
+#         self.cfg = cfg
+#         self.cleanup_previous_files(cfg)
+#         self.controller = Controller()
+
+#     def correlation_filtered_pipeline(self, cfg):
+#         self.controller.create_best_indices_from_corr_dataset(cfg)
+#         self.controller.train_filtered_with_best_features(cfg)
+#         self.controller.generate_confusion_matrix_filtered(cfg)
+#         pass
+
+class CorrelationFilteredPipeline:
+    def __init__(self) -> None:
+        self.controller = Controller()
+
     def correlation_filtered_pipeline(self, cfg):
-        self.controller.create_best_indices_from_corr_dataset(cfg)
-        self.controller.train_filtered_with_best_features(cfg)
+        self.controller.train_correlation_filtered_mlp(cfg)
         self.controller.generate_confusion_matrix_filtered(cfg)
         pass

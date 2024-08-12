@@ -37,7 +37,7 @@ def identify_best_features_ankle_point(cfg):
         all_indices.extend(bottom_features)
     
     unique_indices = sorted(list(set(all_indices)))
-    out_folder = cfg.file_paths.new_dataset.best_features_names_out_folder
+    out_folder = cfg.file_paths.best_features_dataset.best_features_names_out_folder
     os.makedirs(out_folder, exist_ok=True)
     filename = f"Important_Indices_fold_{folds}.txt"
     with open(os.path.join(out_folder, filename), 'w') as f:
@@ -65,7 +65,7 @@ def identify_best_features_cutoff(cfg):
         all_indices.extend(bottom_features)
     
     unique_indices = sorted(list(set(all_indices)))
-    out_folder = cfg.file_paths.new_dataset.best_features_names_out_folder
+    out_folder = cfg.file_paths.best_features_dataset.best_features_names_out_folder
     os.makedirs(out_folder, exist_ok=True)
     filename = f"Important_Indices_cutoff_{cutoff}.txt"
     with open(os.path.join(out_folder, filename), 'w') as f:

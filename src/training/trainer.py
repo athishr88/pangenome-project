@@ -27,8 +27,9 @@ class MLPTrainer:
         self.logger.log("Using partial dataset")
     
     def _create_directories(self):
-        model_save_path = self.cfg.training.model.save_model_dir
-        os.makedirs(model_save_path, exist_ok=True)
+        model_save_path = self.cfg.file_paths.model.model_path
+        model_save_dir = os.path.dirname(model_save_path)
+        os.makedirs(model_save_dir, exist_ok=True)
 
     # def _config_files_prepare(self):
     #     y_file = self.cfg.preprocessing.dataset.serotype_file_path
@@ -77,7 +78,7 @@ class MLPTrainer:
             if val_f1 > best_val_f1:
                 best_val_f1 = val_f1
                 self.logger.log(f"Saving model with F1: {val_f1}")
-                torch.save(model.state_dict(), self.cfg.training.model.save_path)
+                torch.save(model.state_dict(), self.cfg.file_paths.model.model_path)
 
             for i, (x, y) in enumerate(test_loader):
                 x, y = self.dtype_batch(x, y)
@@ -233,8 +234,9 @@ class TransformerTrainerWindowed:
         self.architecture = PangenomeWindowedTransformerModel
 
     def _create_directories(self):
-        model_save_path = self.cfg.training.model.save_model_dir
-        os.makedirs(model_save_path, exist_ok=True)
+        model_save_path = self.cfg.file_paths.model.save_model_dir
+        model_save_dir = os.path.dirname(model_save_path)
+        os.makedirs(model_save_dir, exist_ok=True)
 
     def _config_files_prepare(self):
         y_file = self.cfg.preprocessing.dataset.serotype_file_path
@@ -278,7 +280,7 @@ class TransformerTrainerWindowed:
 
             if val_f1 > best_val_f1:
                 best_val_f1 = val_f1
-                torch.save(model.state_dict(), self.cfg.training.model.save_path)
+                torch.save(model.state_dict(), self.cfg.file_paths.model.model_path)
 
             for i, (indices, sparse_vals, y) in enumerate(test_loader):
                 indices, sparse_vals, y = indices.float().to(device), sparse_vals.long().to(device), y.to(device)

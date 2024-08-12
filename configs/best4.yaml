@@ -1,7 +1,0 @@
-defaults:
-  - utils: best4
-  - preprocessing: top_97
-  - training: best4
-  - model: best4
-  - logging: best4
-  - explanation: base

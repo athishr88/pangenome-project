@@ -1,4 +1,0 @@
-train:
-  log_dir: logs
-  logfile: logs/excluded_indices_train.log
-  train_history: logs/excluded_indices_loss_history.json

@@ -4,7 +4,7 @@ import pandas as pd
 import os
 
 def find_pearson_correlation(cfg):
-    dataset_text_file = cfg.file_paths.new_dataset.dataset_text_file
+    dataset_text_file = cfg.file_paths.best_features_dataset.dataset_text_file
     df = pd.read_csv(dataset_text_file, sep=", ", index_col=0)
     print(df.columns[-1])
     df = df.drop(columns=['serotype_encoded'])

@@ -1,7 +1,7 @@
 defaults:
   - utils: base
-  - preprocessing: base
+  - preprocessing: excluded_indices
   - training: base
   - model: base
-  - logging: base
-  - explanation: base
+  - best_features_dataset: base
+  - file_paths: base

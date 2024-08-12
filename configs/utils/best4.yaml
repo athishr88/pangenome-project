@@ -1,5 +1,0 @@
-defaults:
-  - base
-
-prepare_dataset:
-  dataclass_out_folder_full: best_features_dataclass/best_indices_top_97_pickle/dataclasses

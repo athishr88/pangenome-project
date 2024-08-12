@@ -8,11 +8,12 @@ class Logger:
         self._create_folders()
 
     def _create_folders(self):
-        log_dir = self.cfg.logging.train.log_dir
+        logfile = self.cfg.file_paths.logging.logfile
+        log_dir = os.path.dirname(logfile)
         os.makedirs(log_dir, exist_ok=True)
 
     def log(self, message: str):
-        filename = self.cfg.logging.train.logfile
+        filename = self.cfg.file_paths.logging.logfile
         write_time = time.time()
         passed_time = (write_time - self.start_time) / 3600.00
         with open(filename, 'a') as f:

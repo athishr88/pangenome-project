@@ -1,8 +1,0 @@
-defaults:
-  - utils: base
-  - preprocessing: top_97
-  - training: base
-  - model: base
-  - logging: base
-  - explanation: base
-  - best_features_dataset: base

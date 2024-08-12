@@ -7,5 +7,4 @@ dataset:
   num_classes: 97
   dataset_used: partial
   classes: None
-  excluded_indices_file: /home/athishramdas/Desktop/Pangenome/pangenome-project/data/cols_genereg.csv
   input_size: 234729

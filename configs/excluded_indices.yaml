@@ -1,9 +1,0 @@
-defaults:
-  - utils: excluded_indices
-  - preprocessing: excluded_indices
-  - training: excluded_indices
-  - model: base
-  - logging: excluded_indices
-  - explanation: base
-  - best_features_dataset: excluded_indices
-  - file_paths: excluded_indices
