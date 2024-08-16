@@ -1,4 +1,0 @@
-train:
-  log_dir: logs
-  logfile: logs/windowed.log
-  train_history: logs/windowed_loss_history.json

@@ -1,4 +1,0 @@
-train:
-  log_dir: logs
-  logfile: logs/mlp_train_log_best8.log
-  train_history: logs/mlp_loss_history_best8.json

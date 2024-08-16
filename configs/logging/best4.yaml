@@ -1,4 +1,0 @@
-train:
-  log_dir: logs
-  logfile: logs/mlp_best4.log
-  train_history: logs/mlp_best4_loss_history.json

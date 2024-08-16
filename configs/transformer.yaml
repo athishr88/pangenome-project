@@ -1,7 +1,7 @@
 defaults:
-  - utils: best4
-  - preprocessing: top_97
+  - utils: base
+  - preprocessing: excluded_indices_tr
   - training: transformer
   - model: transformer
-  - logging: transformer
-  - explanation: base
+  - best_features_dataset: base
+  - file_paths: transformer

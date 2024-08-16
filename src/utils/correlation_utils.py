@@ -4,7 +4,7 @@ import pandas as pd
 import os
 
 def find_pearson_correlation(cfg):
-    dataset_text_file = cfg.file_paths.new_dataset.dataset_text_file
+    dataset_text_file = cfg.file_paths.best_features_dataset.dataset_text_file
     df = pd.read_csv(dataset_text_file, sep=", ", index_col=0)
     print(df.columns[-1])
     df = df.drop(columns=['serotype_encoded'])
@@ -63,11 +63,12 @@ def select_from_correlated_indices(cfg):
     corr_matrix_file = cfg.file_paths.corr_matrix.out_file
     df = pd.read_csv(corr_matrix_file, index_col=0)
     
+    correlation_threshold = cfg.preprocessing.dataset.correlation_threshold
     correlated_pairs = []
     col_names = df.columns
     for i in range(len(df.columns)):
         for j in range(i):
-            if abs(df.iloc[i, j]) > 0.7:
+            if abs(df.iloc[i, j]) > correlation_threshold:
                 correlated_pairs.append((col_names[i], col_names[j]))
     
     groups = find_correlated_groups(correlated_pairs)

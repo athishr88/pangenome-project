@@ -86,16 +86,16 @@ class Block(nn.Module):
 class BlocksSequential(nn.Module):
     def __init__(self, n_embd, n_head, dropout, n_layer):
         super().__init__()
-        self.first_blocks = nn.Sequential(*[Block(n_embd, n_head, dropout) for _ in range(n_layer - 1)])
-        self.last_block = Block(n_embd, n_head, dropout)
+        self.first_block = Block(n_embd, n_head, dropout)
+        self.rest_blocks = nn.Sequential(*[Block(n_embd, n_head, dropout) for _ in range(n_layer - 1)])
 
     def forward(self, x):
-        x = self.first_blocks(x)
-        x = self.last_block(x)
+        x = self.first_block(x)
+        x = self.rest_blocks(x)
         return x
 
     def get_attention_matrix(self, x):
-        return self.last_block.get_attention_matrix(x)
+        return self.first_block.get_attention_matrix(x)
 
 class PangenomeTransformerModel(nn.Module):
     def __init__(self, cfg):
@@ -129,13 +129,9 @@ class PangenomeTransformerModel(nn.Module):
         x = self.linear2(x)
         return x
 
-    def get_attention_matrix(self, px_cat, px_cont, mbx_cont):
-        print("Calculating attention matrix...")
-        px_cat = F.relu(self.token_embeddings_table(px_cat))
-        px_cont = F.relu(self.p_continous_embedding(px_cont))
-        mbx_cont = F.relu(self.mb_continuous_embedding(mbx_cont))
-        x_combined = torch.cat([px_cat, px_cont, mbx_cont], dim=1)
-        out = self.blocks.get_attention_matrix(x_combined)
+    def get_attention_matrix(self, X):
+        X = F.relu(self.token_embeddings_table(X))
+        out = self.blocks.get_attention_matrix(X)
         return out
 
 

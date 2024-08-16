@@ -1,4 +1,0 @@
-train:
-  log_dir: logs
-  logfile: logs/vocab3.log
-  train_history: logs/vocab3_loss_history.json

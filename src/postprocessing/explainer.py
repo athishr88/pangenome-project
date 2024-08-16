@@ -1,4 +1,3 @@
-from preprocessing.dataloader import SingleClassDataset, SingleClassDatasetDataclass, SingleClassFiltered
 from torch.utils.data import DataLoader
 from models.mlp import MLPModel
 from captum.attr import DeepLift
@@ -21,7 +20,7 @@ class DeepLiftExplainerPartialDataset:
 
     def _load_model(self, model_path=None):
         if model_path is None:
-            model_path = self.cfg.training.model.save_path
+            model_path = self.cfg.file_paths.model.model_path
 
         self.logger.log(f"Model loading from {model_path}")
         model = MLPModel(self.cfg)

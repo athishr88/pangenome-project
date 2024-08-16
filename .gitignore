@@ -20,3 +20,6 @@ results/
 best_features_dataset/
 correlation_matrix/
 out_file_averages.txt
+attention_matrices/
+attention_matrices_solid/
+*.ipynb

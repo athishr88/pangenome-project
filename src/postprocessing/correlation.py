@@ -49,58 +49,6 @@ def calculate_all_correlations(averages):
     df_corr.to_csv("correlation_matrix/correlation_matrix.csv")
     return corr_matrix
 
-# import os
-# import numpy as np
-# import pandas as pd
-# import pickle
-# from multiprocessing import Pool, cpu_count
-
-# def process_file(args):
-#     file_path, num_features, averages = args
-#     with open(file_path, 'rb') as f:
-#         sample = pickle.load(f)
-#         sparse_vals = np.array(sample.sparse_vals)
-        
-#     # Calculate differences from averages
-#     diff_vals = sparse_vals - averages
-#     corr_matrix_partial = np.zeros((num_features, num_features))
-
-#     for col1 in range(num_features):
-#         for col2 in range(col1, num_features):
-#             numerator = diff_vals[col1] * diff_vals[col2]
-#             denominator1 = diff_vals[col1] ** 2
-#             denominator2 = diff_vals[col2] ** 2
-#             corr_matrix_partial[col1, col2] += numerator / (denominator1 * denominator2)**0.5
-#             corr_matrix_partial[col2, col1] = corr_matrix_partial[col1, col2]
-
-#     return corr_matrix_partial
-
-# def calculate_all_correlations(averages):
-#     dataclass_folder = "/home/athishramdas/Desktop/Pangenome/pangenome-project/best_features_dataset/dataclass"
-#     dataclass_files = os.listdir(dataclass_folder)
-#     files = [f for f in dataclass_files if f.endswith('.pkl')]
-#     num_features = 66140
-
-#     # Prepare arguments for parallel processing
-#     args = [(os.path.join(dataclass_folder, file), num_features, averages) for file in files]
-
-#     # Use multiprocessing to process files in parallel
-#     with Pool(cpu_count()) as pool:
-#         results = pool.map(process_file, args)
-
-#     # Aggregate results
-#     corr_matrix = np.sum(results, axis=0)
-#     corr_matrix /= len(files)
-
-#     # Save to file
-#     df_corr = pd.DataFrame(corr_matrix)
-#     df_corr.to_csv("correlation_matrix.csv")
-
-#     return corr_matrix
-
-
-    
-
 def get_averages():
     dataclass_folder = "/home/athishramdas/Desktop/Pangenome/pangenome-project/best_features_dataset/dataclass"
     dataclass_files = os.listdir(dataclass_folder)

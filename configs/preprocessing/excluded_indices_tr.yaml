@@ -3,7 +3,9 @@ defaults:
   
 dataset:
   top_n: 97
+  fixed_feature_len: 236071
   num_classes: 97
   dataset_used: partial
   classes: None
-  input_size: 21228
+  input_size: 71
+  correlation_threshold: 0.7

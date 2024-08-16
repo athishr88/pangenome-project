@@ -31,9 +31,8 @@ class BestFeaturesDataclassDataset:
         self.tfr_sample_names = self._get_tfr_sample_names() #[SRR12345.csv, SRR67890.csv, ... (~300000 or more)]
         self.create_headers()
 
-
     def create_headers(self):
-        out_folder = self.cfg.file_paths.new_dataset.out_folder
+        out_folder = self.cfg.file_paths.best_features_dataset.out_folder
         os.makedirs(out_folder, exist_ok=True)
 
         with open(os.path.join(out_folder, f'best_{self.num_top_serotypes}_dataset.txt'), 'w') as f:
@@ -66,7 +65,7 @@ class BestFeaturesDataclassDataset:
         return self._best_features
 
     def get_best_features(self):
-        best_features_folder = self.cfg.file_paths.new_dataset.best_features_names_out_folder
+        best_features_folder = self.cfg.file_paths.best_features_dataset.best_features_names_out_folder
         cutoff = self.cfg.best_features_dataset.dataset.cutoff
         # filename = f'Important_Indices_fold_{cutoff}.txt'
         filename = f'Important_Indices_cutoff_{cutoff}.txt'
@@ -85,10 +84,6 @@ class BestFeaturesDataclassDataset:
         tfr_filenames = [f'{name}.pkl' for name in tfr_filenames_stem]
         return tfr_filenames
 
-    def _get_dataclass_full_path(self, filename):
-        dataclass_out_folder = self.cfg.utils.prepare_dataset.dataclass_out_folder_full
-        return os.path.join(dataclass_out_folder, filename)
-    
     def _get_X(self, indices, sparse_values):
         """Produces fixed length feature vector of dim=n from indices and sparse values."""
         feature_vector_len = 236071 #230000
@@ -119,42 +114,49 @@ class BestFeaturesDataclassDataset:
             sample = pickle.load(f)
 
         return sample.indices, sample.sparse_vals, sample.serotype
+    
+    def save_dataset_as_txt(self, sample_id, X_filtered, y, out_folder):
+        with open(os.path.join(out_folder, f'best_{self.num_top_serotypes}_dataset.txt'), 'a') as f:
+            f.write(f'{sample_id}, ')
+            for val in X_filtered:
+                f.write(f'{val}, ')
+            f.write(f'{y}\n')
+
+    def save_dataset_as_dataclass(self, sample_id, X_filtered, y, out_folder):
+        filtered_sample = FilteredSample(name=sample_id.split(".")[0], sparse_vals=X_filtered, serotype=y)
+        with open(os.path.join(out_folder, f'{sample_id}'), 'wb') as f:
+            pickle.dump(filtered_sample, f)
+
+    def calculate_remaining_time(self, idx, st):
+        elapsed = time.time() - st
+        samples_remaining = len(self.tfr_sample_names) - idx
+        time_remaining = elapsed / idx * samples_remaining / 60
+        print(f"Processing {idx}th sample, {time_remaining:.2f} minutes remaining.")
 
     def generate_dataset(self):
-        flag = 0
-        out_folder = self.cfg.file_paths.new_dataset.out_folder
+        out_folder = self.cfg.file_paths.best_features_dataset.out_folder
+        save_txt = self.cfg.best_features_dataset.dataset.save_txt
+        save_dataclass = self.cfg.best_features_dataset.dataset.save_dataclass
+
+        dataclass_folder = out_folder + '/dataclass'
+        metadata_folder = out_folder + '/metadata'
+        os.makedirs(dataclass_folder, exist_ok=True)
+        os.makedirs(metadata_folder, exist_ok=True)
+
         st = time.time()
 
         for idx, sample_id in enumerate(self.tfr_sample_names):
-            if idx % 10000 == 1:
-                
-                # Calculate remaining time
-                elapsed = time.time() - st
-                samples_remaining = len(self.tfr_sample_names) - idx
-                time_remaining = elapsed / idx * samples_remaining / 60
-                print(f"Processing {idx}th sample, {time_remaining:.2f} minutes remaining.")
-            
             X, sparse_vals, y = self._indices_and_sparse_vals(idx)
             X_filtered = self._get_X(X, sparse_vals)
-            
-            if flag == 0:
-                print(f'X_filtered: {X_filtered.shape}')
-                flag = 1
-            with open(os.path.join(out_folder, f'best_{self.num_top_serotypes}_dataset.txt'), 'a') as f:
-                f.write(f'{sample_id}, ')
-                for val in X_filtered:
-                    f.write(f'{val}, ')
-                f.write(f'{y}\n')
 
-            dataclass_folder = out_folder + '/dataclass'
-            metadata_folder = out_folder + '/metadata'
-            os.makedirs(dataclass_folder, exist_ok=True)
-            os.makedirs(metadata_folder, exist_ok=True)
+            if save_txt:
+                self.save_dataset_as_txt(sample_id, X_filtered, y, out_folder)
 
-            filtered_sample = FilteredSample(name=sample_id.split(".")[0], sparse_vals=X_filtered, serotype=y)
-            with open(os.path.join(dataclass_folder, f'{sample_id}'), 'wb') as f:
-                pickle.dump(filtered_sample, f)
+            if save_dataclass:
+                self.save_dataset_as_dataclass(sample_id, X_filtered, y, dataclass_folder)
 
+            if idx % 10000 == 0:
+                self.calculate_remaining_time(idx, st)
 
 class CorrelationFilteredDataset(BestFeaturesDataclassDataset):
     def __init__(self, cfg: dict, num_top_serotypes: int):
