@@ -1,4 +1,4 @@
 hyperparams:
-  num_epochs: 50
+  num_epochs: 10
   lr: 1e-4
   batch_size: 1024

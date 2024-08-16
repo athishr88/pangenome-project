@@ -1,14 +1,13 @@
 # from prepare_dataset.all_indices_dataset import create_serotype_mapping, create_pickled_dataset
-from training.trainer import MLPTrainer, MLPTrainerBestFeatures, TransformerTrainer, MLPTrainerFilteredFeatures, TransformerTrainerVocab3
-from training.trainer import TransformerTrainerWindowed, MLPTrainerCorrFiltered
+from training.trainer import MLPTrainer, MLPTrainerBestFeatures, TransformerTrainer, MLPTrainerFilteredFeatures
+from training.trainer import MLPTrainerCorrFiltered, TransformerTrainerCorrFiltered
 from postprocessing.explainer import DeepLiftExplainerPartialDataset, DeepLiftExplainerFiltered
 from prepare_dataset.best_indices_dataset import BestFeaturesDataclassDataset, CorrelationFilteredDataset
 from prepare_dataset.windowed_dataset import WindowedDataset, Sample
 from utils.logger import Logger
 from prepare_dataset.pd_utils import identify_best_features_cutoff, identify_best_features_ankle_point, create_best_features_dataset
 from prepare_dataset.pd_utils import create_best_features_from_corr_dataset
-from preprocessing.dataloader import SingleClassDatasetDataclass
-from utils.f1_utils import ConfusionMatrixGenerator
+from utils.f1_utils import ConfusionMatrixGenerator, CMTransformer
 import pandas as pd
 import time
 import os
@@ -21,14 +20,6 @@ class Controller:
 
     # def get_sequence_map(self, config):
     #     return get_sequence_map(config)
-    
-    # def get_dataset(self, cfg):
-    #     TFRecordsDataset.initialize_data(cfg)
-    #     train_dataset = TFRecordsDataset.from_split('train')
-    #     val_dataset = TFRecordsDataset.from_split('val')
-    #     test_dataset = TFRecordsDataset.from_split('test')
-
-    #     return train_dataset, val_dataset, test_dataset
     
     def train_mlp(self, cfg):
         logger = Logger(cfg)
@@ -108,3 +99,18 @@ class Controller:
     def train_correlation_filtered_mlp(self, cfg):
         trainer = MLPTrainerCorrFiltered(cfg)
         trainer.train()
+
+    def train_correlation_filtered_transformer(self, cfg):
+        trainer = TransformerTrainerCorrFiltered(cfg)
+        trainer.train()
+
+    def generate_confusion_matrix_filtered_transformer(self, cfg):
+        
+        cmg = CMTransformer(cfg)
+        cmg.generate_confusion_matrix()
+    
+    # def create_serotype_mapping(self, cfg):
+    #     create_serotype_mapping(cfg)
+
+    def get_attention_matrix(self, cfg):
+        pass

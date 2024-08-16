@@ -1,3 +1,4 @@
+from models.transformer import PangenomeTransformerModel
 from preprocessing.dataloader import CorrFilteredDataset
 from sklearn.metrics import confusion_matrix
 from torch.utils.data import DataLoader
@@ -46,10 +47,14 @@ class ConfusionMatrixGenerator:
         self.model.load_state_dict(torch.load(saved_model_path))
         self.model.eval()
 
+    def dtype_batch(self, x, y):
+        return x.float().to(device), y.to(device)
+
     def generate_confusion_matrix(self):
         preds, targets = [], []
         with torch.no_grad():
             for i, (x, y) in enumerate(self.test_loader):
+                x, y = self.dtype_batch(x, y)
                 if i % 100 == 0:
                     self.logger.log(f"Batch {i}")
                 x, y = x.to(device), y.to(device)
@@ -57,25 +62,27 @@ class ConfusionMatrixGenerator:
                 preds.extend(y_pred.argmax(dim=1).cpu().numpy())
                 targets.extend(y.cpu().numpy())
         cm = confusion_matrix(targets, preds)
-        # Plot the confusion matrix and save it
-        # plt.matshow(cm)
-        # plt.title('Confusion matrix')
-        # plt.colorbar()
-        # plt.ylabel('True label')
-        # plt.xlabel('Predicted label')
-        # plt.savefig('confusion_matrix.png') 
-        # plt.show()
         self.save_to_file(cm)
     
     def save_to_file(self, cm):
         classes = self.cfg.preprocessing.dataset.classes
         df = pd.DataFrame(cm, columns=classes, index=classes)
         out_folder = self.cfg.file_paths.best_features_dataset.best_features_names_out_folder
-        cutoff = self.cfg.best_features_dataset.dataset.cutoff
-        out_folder = out_folder + f"/cutoff_{cutoff}"
+        # cutoff = self.cfg.best_features_dataset.dataset.cutoff
+        threshold = self.cfg.preprocessing.dataset.correlation_threshold
+        out_folder = out_folder + f"/corr_threshold_{threshold}"
         os.makedirs(out_folder, exist_ok=True)
         filename = f"confusion_matrix.xlsx"
         df.to_excel(os.path.join(out_folder, filename))
         self.logger.log(f"Confusion matrix saved at {os.path.join(out_folder, filename)}")
         pass
 
+class CMTransformer(ConfusionMatrixGenerator):
+    def _initialize_model(self):
+        self.model = PangenomeTransformerModel(self.cfg)
+        saved_model_path = self.cfg.file_paths.model.model_path
+        self.model.load_state_dict(torch.load(saved_model_path))
+        self.model.eval()
+
+    def dtype_batch(self, x, y):
+        return x.long().to(device), y.to(device)

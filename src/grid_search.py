@@ -1,4 +1,4 @@
-from pipeline import Pipeline
+from pipeline import CorrelationFilteredPipeline, ExcludedIndicesPipeline
 from utils.logger import Logger
 
 class GridSearch:
@@ -7,7 +7,8 @@ class GridSearch:
         pass
 
     def grid_search_excluded_indices(self, cfg):
-        pipeline = Pipeline(cfg)
+        # Obsolete
+        pipeline = ExcludedIndicesPipeline(cfg)
         logger = Logger(cfg)
         cutoffs = [1]
         for cutoff in cutoffs:
@@ -15,3 +16,5 @@ class GridSearch:
             pipeline.edit_config_files(cfg, cutoff)
             pipeline.excluded_indices_pipeline_cutoff(cfg)
         
+    def grid_search_correlation_filtered(self, cfg):
+        pass

@@ -1,0 +1,7 @@
+defaults:
+  - utils: base
+  - preprocessing: excluded_indices_tr
+  - training: transformer
+  - model: transformer
+  - best_features_dataset: base
+  - file_paths: transformer

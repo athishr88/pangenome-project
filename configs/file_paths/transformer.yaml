@@ -1,0 +1,9 @@
+defaults:
+  - base
+
+model:
+  model_path: saved_models/tr_model_dict.pth
+
+logging:
+  logfile: logs/tr_excluded_indices.log
+  train_history: logs/tr_excluded_indices_loss_history.json

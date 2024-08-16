@@ -49,3 +49,9 @@ class CorrelationFilteredPipeline:
         self.controller.train_correlation_filtered_mlp(cfg)
         self.controller.generate_confusion_matrix_filtered(cfg)
         pass
+
+    def correlation_filtered_transformer(self, cfg):
+        # self.controller.train_correlation_filtered_transformer(cfg)
+        # self.controller.generate_confusion_matrix_filtered_transformer(cfg)
+        self.controller.get_attention_matrix(cfg)
+        pass

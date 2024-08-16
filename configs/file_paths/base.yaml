@@ -29,3 +29,6 @@ model:
 logging:
   logfile: logs/excluded_indices.log
   train_history: logs/excluded_indices_loss_history.json
+
+explanation:
+  attention_matrix_out_folder: attention_matrices

@@ -7,5 +7,5 @@ dataset:
   num_classes: 97
   dataset_used: partial
   classes: None
-  input_size: 234729
-  correlation_threshold: 0.595
+  input_size: 71
+  correlation_threshold: 0.7
