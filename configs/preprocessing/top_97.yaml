@@ -1,0 +1,8 @@
+defaults:
+  - base
+
+dataset:
+  top_n: 97
+  fixed_feature_len: 236071
+  num_classes: 97
+  classes: None

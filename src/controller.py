@@ -17,14 +17,8 @@ class Controller:
     can be used to call them"""
     def __init__(self) -> None:
         pass
-
-    # def get_sequence_map(self, config):
-    #     return get_sequence_map(config)
     
-    def train_mlp(self, cfg):
-        logger = Logger(cfg)
-        time_now = time.strftime("%Y%m%d-%H%M%S")
-        logger.log(f"Initializing training at {time_now}")
+    def train_mlp_top_97(self, cfg):
         trainer = MLPTrainer(cfg)
         trainer.train()
 

@@ -1,6 +1,6 @@
 defaults:
   - utils: base
-  - preprocessing: base
+  - preprocessing: excluded_indices
   - training: base
   - model: base
   - best_features_dataset: base

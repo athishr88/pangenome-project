@@ -112,6 +112,7 @@ class MLPTrainer:
                 if i % 30 == 0:
                     val_f1, test_f1, best_val_f1, val_loss, test_loss = self.evaluate(model, val_loader, test_loader, criterion, best_val_f1)
                     self.logger.log(f"Train Batch {i}/{len(train_loader)}: Loss: {loss.item()}")
+                    # self.logger.log(f"Train Batch {i}/{len(train_loader)}: Loss: {loss.item()}")
 
                 total_train_loss += loss.item()
                 loss.backward()

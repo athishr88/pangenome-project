@@ -11,11 +11,18 @@ class BestSample:
     sparse_vals: np.ndarray
     serotype: int
 
+@dataclass
+class Sample:
+    name: str
+    indices: np.ndarray
+    sparse_vals: np.ndarray
+    serotype: int
+
 controller = Controller()
 
-@hydra.main(config_path="../configs", config_name="config", version_base=None)
+@hydra.main(config_path="../configs", config_name="top_97", version_base=None)
 def main(cfg):
-    controller.generate_confusion_matrix_filtered(cfg)
+    controller.train_mlp_top_97(cfg)
     
 
 if __name__ == "__main__":

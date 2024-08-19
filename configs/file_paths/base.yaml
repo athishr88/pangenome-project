@@ -6,11 +6,11 @@ best_features_dataset:
   dataset_text_file: best_features_dataset/best_dataset.txt
 
 full_dataset:
-  dataclass_in_folder: /media/athishramdas/data/Pangenome-archive/tf_records_dataclass
+  dataclass_in_folder: /data/Athish/pangenome-project/pickled_dataset/tf_records_dataclass
 
 supporting_files:
   fi_folder: /home/athishramdas/Desktop/Pangenome/pangenome-project/explanations
-  serotype_file_path: /home/athishramdas/Desktop/Pangenome/pangenome-project/data/SRA_Serotype_file.csv
+  serotype_file_path: /home/ShareDirectory/Adam_Project/TF_Extracted/SRA_Serotype_file.csv
 
 corr_matrix:
   out_file: results/correlation_matrix/corr_matrix.csv
@@ -24,11 +24,11 @@ windowed:
   out_folder: /home/athishramdas/Desktop/Pangenome/transformer-attempt/pangenome-project/windowed_dataset
   
 model:
-  model_path: saved_models/model_dict.pth
+  model_path: saved_models/model_dict_top_97.pth
 
 logging:
-  logfile: logs/excluded_indices.log
-  train_history: logs/excluded_indices_loss_history.json
+  logfile: logs/top_97.log
+  train_history: logs/top_97_loss_history.json
 
 explanation:
   attention_matrix_out_folder: attention_matrices

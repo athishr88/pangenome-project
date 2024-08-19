@@ -1,7 +1,6 @@
 defaults:
   - utils: base
-  - preprocessing: base
+  - preprocessing: top_97
   - training: base
   - model: base
-  - best_features_dataset: base
   - file_paths: base
