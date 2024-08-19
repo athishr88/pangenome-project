@@ -1,3 +1,4 @@
+from preprocessing.single_class_datasets import SingleClassDataset
 from torch.utils.data import DataLoader
 from models.mlp import MLPModel
 from captum.attr import DeepLift
@@ -8,7 +9,7 @@ import pickle
 import torch
 import os
 
-class DeepLiftExplainerPartialDataset:
+class DeepLiftExplainerTop97:
     def __init__(self, cfg, model_path=None):
         self.logger = Logger(cfg)
         self.cfg = cfg
@@ -29,7 +30,7 @@ class DeepLiftExplainerPartialDataset:
         return model
     
     def _config_files_prepare(self):
-        y_file = self.cfg.preprocessing.dataset.serotype_file_path
+        y_file = self.cfg.file_paths.supporting_files.serotype_file_path
         df = pd.read_csv(y_file)
         # Remove the rows in which the Serotype value is 0
         df = df[df['Serotype'] != '0']
@@ -57,32 +58,32 @@ class DeepLiftExplainerPartialDataset:
             total_attributions += attributions
         
         mean_attributions = total_attributions / (i+1)
-        print(mean_attributions.shape)
 
         explain_df = pd.DataFrame(mean_attributions)
         
         # Save to file
         fixed_feature_len = self.cfg.preprocessing.dataset.fixed_feature_len
         all_rows = [i for i in range(fixed_feature_len)]
-        rows = [f"sequence_{i}" for i in all_rows if i not in self.excluded_indices]
+        # rows = [f"sequence_{i}" for i in all_rows if i not in self.excluded_indices]
+        rows = [f"sequence_{i}" for i in all_rows]
         # rows = [f"sequence_{i}" for i in range(len(mean_attributions))]
         explain_df.index = rows
         explain_df = explain_df.sort_values(by=0, ascending=False)
-        os.makedirs("explanations", exist_ok=True)
-        explain_df.to_csv(f"explanations/{serotype}.csv")
+        deeplift_out_folder = self.cfg.file_paths.explanation.deeplift_fi_folder
+        os.makedirs(deeplift_out_folder, exist_ok=True)
+        explain_df.to_csv(f"{deeplift_out_folder}/{serotype}.csv")
     
     def explain_test(self):
-
         self.logger.log("Starting explanation")
         classes = self.cfg.preprocessing.dataset.classes
         for serotype in classes:
             # dataset = SingleClassDataset(self.cfg, serotype)
-            dataset = SingleClassDatasetDataclass(self.cfg, serotype)
+            dataset = SingleClassDataset(self.cfg, serotype)
             self.y_map = dataset.y_map
             loader = DataLoader(dataset, batch_size=32, shuffle=False)
             self._explain(loader, serotype)
 
-class DeepLiftExplainerFiltered(DeepLiftExplainerPartialDataset):
+class DeepLiftExplainerFiltered(DeepLiftExplainerTop97):
     def __init__(self, cfg, model_path=None):
         super().__init__(cfg, model_path)
         

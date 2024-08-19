@@ -6,15 +6,15 @@ import os
 def find_pearson_correlation(cfg):
     dataset_text_file = cfg.file_paths.best_features_dataset.dataset_text_file
     df = pd.read_csv(dataset_text_file, sep=", ", index_col=0)
-    print(df.columns[-1])
     df = df.drop(columns=['serotype_encoded'])
 
     corr_matrix = df.corr(method='pearson')
     # Restrict decimal points to 3
     corr_matrix = corr_matrix.round(3)
     out_file = cfg.file_paths.corr_matrix.out_file
-    out_folder = out_file.rsplit("/", 1)[0]
-    os.makedirs(out_folder, exist_ok=True)
+
+    corr_out_folder = os.path.dirname(out_file)
+    os.makedirs(corr_out_folder, exist_ok=True)
 
     corr_matrix.to_csv(out_file)
 

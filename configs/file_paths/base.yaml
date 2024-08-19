@@ -1,9 +1,9 @@
 best_features_dataset:
-  best_features_names_out_folder: results/best_indices_filtered/
-  out_folder: best_features_dataset
+  best_features_names_out_folder: results/best_indices/
+  out_folder: /data/best_features_dataset
   dataclass_in_folder: best_features_dataset/dataclass
   metadata_in_folder: best_features_dataset/metadata
-  dataset_text_file: best_features_dataset/best_dataset.txt
+  dataset_text_file: best_features_dataset/best_97_dataset.txt
 
 full_dataset:
   dataclass_in_folder: /data/Athish/pangenome-project/pickled_dataset/tf_records_dataclass
@@ -32,3 +32,4 @@ logging:
 
 explanation:
   attention_matrix_out_folder: attention_matrices
+  deeplift_fi_folder: results/deeplift_fi

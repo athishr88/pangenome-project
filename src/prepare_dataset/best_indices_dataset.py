@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from utils.logger import Logger
 import time
 import zipfile
 from sklearn.preprocessing import LabelEncoder
@@ -30,6 +31,7 @@ class BestFeaturesDataclassDataset:
         
         self.tfr_sample_names = self._get_tfr_sample_names() #[SRR12345.csv, SRR67890.csv, ... (~300000 or more)]
         self.create_headers()
+        self.logger = Logger(cfg)
 
     def create_headers(self):
         out_folder = self.cfg.file_paths.best_features_dataset.out_folder
@@ -155,7 +157,7 @@ class BestFeaturesDataclassDataset:
             if save_dataclass:
                 self.save_dataset_as_dataclass(sample_id, X_filtered, y, dataclass_folder)
 
-            if idx % 10000 == 0:
+            if idx % 10000 == 1:
                 self.calculate_remaining_time(idx, st)
 
 class CorrelationFilteredDataset(BestFeaturesDataclassDataset):

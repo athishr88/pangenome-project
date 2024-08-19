@@ -4,3 +4,4 @@ defaults:
   - training: base
   - model: base
   - file_paths: base
+  - best_features_dataset: base

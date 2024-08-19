@@ -22,7 +22,7 @@ controller = Controller()
 
 @hydra.main(config_path="../configs", config_name="top_97", version_base=None)
 def main(cfg):
-    controller.train_mlp_top_97(cfg)
+    controller.create_best_indices_dataset_from_corr_vals(cfg)
     
 
 if __name__ == "__main__":

@@ -45,7 +45,7 @@ def identify_best_features_ankle_point(cfg):
             f.write("%s\n" % idx)
 
 def identify_best_features_cutoff(cfg):
-    fi_folder = cfg.file_paths.supporting_files.fi_folder
+    fi_folder = cfg.file_paths.explanation.deeplift_fi_folder
     files = os.listdir(fi_folder)
     files = [f for f in files if f.endswith('.csv')]
 
@@ -99,11 +99,11 @@ def identify_best_features_combined(cfg):
 
 
 def create_best_features_dataset(cfg):
-    num_top_serotypes = cfg.best_features_dataset.dataset.num_top_serotypes
+    num_top_serotypes = cfg.preprocessing.dataset.top_n
     dataset = BestFeaturesDataclassDataset(cfg, num_top_serotypes)
     dataset.generate_dataset()
 
-def create_best_features_from_corr_dataset(cfg):
-    num_top_serotypes = cfg.best_features_dataset.dataset.num_top_serotypes
+def create_best_features_dataset_from_corr_vals(cfg):
+    num_top_serotypes = cfg.preprocessing.dataset.top_n
     dataset = CorrelationFilteredDataset(cfg, num_top_serotypes)
     dataset.generate_dataset()
