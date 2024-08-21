@@ -1,8 +1,6 @@
 import hydra
 import numpy as np
-from pipeline import CorrelationFilteredPipeline
 from dataclasses import dataclass
-from utils.correlation_utils import select_from_correlated_indices
 from controller import Controller
 
 @dataclass
@@ -20,9 +18,9 @@ class Sample:
 
 controller = Controller()
 
-@hydra.main(config_path="../configs", config_name="top_97", version_base=None)
+@hydra.main(config_path="../configs", config_name="coding_region", version_base=None)
 def main(cfg):
-    controller.create_best_indices_dataset_from_corr_vals(cfg)
+    controller.train_correlation_filtered_mlp(cfg)
     
 
 if __name__ == "__main__":

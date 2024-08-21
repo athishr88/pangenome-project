@@ -6,4 +6,4 @@ dataset:
   fixed_feature_len: 236071
   num_classes: 97
   classes: None
-  correlation_threshold: 0.525
+  correlation_threshold: 0.56

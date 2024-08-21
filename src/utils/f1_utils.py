@@ -1,9 +1,9 @@
 from models.transformer import PangenomeTransformerModel
 from preprocessing.dataloader import CorrFilteredDataset
 from sklearn.metrics import confusion_matrix
+from models.mlp import MLPModel, MLPModelOH
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
-from models.mlp import MLPModel
 from utils.logger import Logger
 import pandas as pd
 import torch
@@ -55,7 +55,7 @@ class ConfusionMatrixGenerator:
         with torch.no_grad():
             for i, (x, y) in enumerate(self.test_loader):
                 x, y = self.dtype_batch(x, y)
-                if i % 100 == 0:
+                if i % 1000 == 0:
                     self.logger.log(f"Batch {i}")
                 x, y = x.to(device), y.to(device)
                 y_pred = self.model(x)
@@ -75,7 +75,6 @@ class ConfusionMatrixGenerator:
         filename = f"confusion_matrix.xlsx"
         df.to_excel(os.path.join(out_folder, filename))
         self.logger.log(f"Confusion matrix saved at {os.path.join(out_folder, filename)}")
-        pass
 
 class CMTransformer(ConfusionMatrixGenerator):
     def _initialize_model(self):
@@ -86,3 +85,13 @@ class CMTransformer(ConfusionMatrixGenerator):
 
     def dtype_batch(self, x, y):
         return x.long().to(device), y.to(device)
+    
+class CMNormal(ConfusionMatrixGenerator):
+    def __init__(self, cfg):
+        super().__init__(cfg)
+
+    def _initialize_model(self):
+        self.model = MLPModelOH(self.cfg)
+        saved_model_path = self.cfg.file_paths.model.model_path
+        self.model.load_state_dict(torch.load(saved_model_path))
+        self.model.eval()

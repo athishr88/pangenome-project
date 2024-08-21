@@ -6,7 +6,7 @@ from models.transformer import PangenomeTransformerModel, PangenomeWindowedTrans
 from utils.json_logger import update_metrics
 from torch.utils.data import DataLoader
 from sklearn.metrics import f1_score
-from models.mlp import MLPModel
+from models.mlp import MLPModel, MLPModelOH
 from utils.logger import Logger
 from utils.cacher import cache
 import pandas as pd
@@ -141,7 +141,7 @@ class MLPTrainerCorrFiltered(MLPTrainer):
     def __init__(self, cfg):
         super().__init__(cfg)
         self.dataset = CorrFilteredDataset
-
+        self.architecture = MLPModelOH
 
 class TransformerTrainer(MLPTrainer):
     def __init__(self, cfg):

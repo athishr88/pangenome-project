@@ -1,0 +1,37 @@
+best_features_dataset:
+  best_features_names_out_folder: results/best_indices_coding/
+  out_folder: best_features_dataset_coding
+  dataclass_in_folder: best_features_dataset_coding/dataclass
+  metadata_in_folder: best_features_dataset_coding/metadata
+  dataset_text_file: best_features_dataset_coding/best_97_dataset.txt
+
+full_dataset:
+  dataclass_in_folder: /data/Athish/pangenome-project/pickled_dataset/tf_records_dataclass
+
+supporting_files:
+  fi_folder: /home/athishramdas/Desktop/Pangenome/pangenome-project/explanations
+  serotype_file_path: /home/ShareDirectory/Adam_Project/TF_Extracted/SRA_Serotype_file.csv
+
+corr_matrix:
+  out_file: results/correlation_matrix_coding/corr_matrix.csv
+  filtered_indices_file: results/correlation_matrix_coding/filtered_indices.txt
+
+excluded_indices:
+  excluded_indices_file: /home/athishramdas/Desktop/Pangenome/pangenome-project/data/cols_genereg.csv
+  
+windowed:
+  selected_windows_file: input_data/best_contigs_windows/best_contigs_windows_150.txt
+  out_folder: /home/athishramdas/Desktop/Pangenome/transformer-attempt/pangenome-project/windowed_dataset
+  
+model:
+  model_path: saved_models/model_dict_top_97_coding.pth
+
+logging:
+  logfile: logs/top_97_coding.log
+  train_history: logs/top_97_coding_loss_history.json
+
+explanation:
+  attention_matrix_out_folder: attention_matrices
+  deeplift_fi_folder: results/deeplift_fi
+  coding_regions_file: data/Nodes_in_Coding_Regions.txt
+  non_coding_regions_file: data/Nodes_in_Non_Coding_Regions.txt

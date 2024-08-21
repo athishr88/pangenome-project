@@ -17,7 +17,7 @@ best_features_dataclass/
 explanations/
 nohup.out
 results/
-best_features_dataset/
+best_features_dataset*/
 correlation_matrix/
 out_file_averages.txt
 attention_matrices/

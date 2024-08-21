@@ -2,6 +2,7 @@ from prepare_dataset.best_indices_dataset import BestFeaturesDataclassDataset, C
 import matplotlib.pyplot as plt
 from kneed import KneeLocator
 import pandas as pd
+import numpy as np
 import os
 
 def identify_best_features_ankle_point(cfg):
@@ -95,6 +96,96 @@ def identify_best_features_combined(cfg):
     print(len(best_features))
     
     # print(df_combined)
+
+def identify_best_features_non_coding(cfg):
+    non_coding_region_file = cfg.file_paths.explanation.non_coding_regions_file
+    df_non_coding = pd.read_csv(non_coding_region_file, sep=', ', header=None, index_col=0)
+    non_coding_regions = df_non_coding.index.tolist()
+    non_coding_regions = (np.array(non_coding_regions)-1).tolist()
+
+    fi_folder = cfg.file_paths.explanation.deeplift_fi_folder
+    
+    files = os.listdir(fi_folder)
+    files = [f for f in files if f.endswith('.csv')]
+
+    cutoff = cfg.best_features_dataset.dataset.cutoff
+    all_indices = []
+
+    for i, file in enumerate(files):
+        print(file)
+        df = pd.read_csv(os.path.join(fi_folder, file), names=["feature", "score"], skiprows=1, index_col=0)
+        df = df.sort_values("score", ascending=False)
+        all_features = df.index.tolist()
+        all_features = [int(x.split("_")[1]) for x in all_features]
+
+        total_added = 0
+        for k in range(len(all_features)):
+            if all_features[k] in non_coding_regions:
+                all_indices.append(all_features[k])
+                total_added += 1
+                if total_added == cutoff:
+                    break
+        
+        total_added = 0
+        for k in range(len(all_features)):
+            if all_features[-k] in non_coding_regions:
+                all_indices.append(all_features[-k])
+                total_added += 1
+                if total_added == cutoff:
+                    break
+    
+    unique_indices = sorted(list(set(all_indices)))
+    out_folder = cfg.file_paths.best_features_dataset.best_features_names_out_folder
+    os.makedirs(out_folder, exist_ok=True)
+    filename = f"Important_Indices_cutoff_{cutoff}.txt"
+    with open(os.path.join(out_folder, filename), 'w') as f:
+        for idx in unique_indices:
+            f.write("%s\n" % idx)
+
+def identify_best_features_coding(cfg):
+    coding_region_file = cfg.file_paths.explanation.coding_regions_file
+    df_non_coding = pd.read_csv(coding_region_file, sep=', ', header=None, index_col=0)
+    coding_regions = df_non_coding.index.tolist()
+    coding_regions = (np.array(coding_regions)-1).tolist()
+
+    fi_folder = cfg.file_paths.explanation.deeplift_fi_folder
+    
+    files = os.listdir(fi_folder)
+    files = [f for f in files if f.endswith('.csv')]
+
+    cutoff = cfg.best_features_dataset.dataset.cutoff
+    all_indices = []
+
+    for i, file in enumerate(files):
+        print(file)
+        df = pd.read_csv(os.path.join(fi_folder, file), names=["feature", "score"], skiprows=1, index_col=0)
+        df = df.sort_values("score", ascending=False)
+        all_features = df.index.tolist()
+        all_features = [int(x.split("_")[1]) for x in all_features]
+
+        total_added = 0
+        for k in range(len(all_features)):
+            if all_features[k] in coding_regions:
+                all_indices.append(all_features[k])
+                total_added += 1
+                if total_added == cutoff:
+                    break
+        
+        total_added = 0
+        for k in range(len(all_features)):
+            if all_features[-k] in coding_regions:
+                all_indices.append(all_features[-k])
+                total_added += 1
+                if total_added == cutoff:
+                    break
+    
+    unique_indices = sorted(list(set(all_indices)))
+    out_folder = cfg.file_paths.best_features_dataset.best_features_names_out_folder
+    os.makedirs(out_folder, exist_ok=True)
+    filename = f"Important_Indices_cutoff_{cutoff}.txt"
+    with open(os.path.join(out_folder, filename), 'w') as f:
+        for idx in unique_indices:
+            f.write("%s\n" % idx)
 
 
 

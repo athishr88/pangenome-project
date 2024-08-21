@@ -281,6 +281,7 @@ class CorrFilteredDataset(TFRBestFeaturesDataclass):
             tfr_indices = [int(i.rstrip()) for i in tfr_indices]
 
         excluded_features_index_nums = [tfr_indices.index(i) for i in features]
+        self.logger.log(f"Following indices used {features}")
         return excluded_features_index_nums
     
     def __getitem__(self, idx):
@@ -300,12 +301,14 @@ class CorrFilteredDataset(TFRBestFeaturesDataclass):
         X = sample.sparse_vals #np.uint8
         # Convert all values above 0 to 1
         # X = np.where(X > 0, 1, 0) # TODO uncomment for MLP
+        vocab_size = self.cfg.preprocessing.dataset.vocab_size
         X[X == 99] = 21
         X = X[self.corr_included_indices]
+        X = np.eye(vocab_size)[np.array(X, dtype=int)]
         y = sample.serotype
 
-        X = torch.tensor(X, dtype=torch.float)
-        y = torch.tensor(y, dtype=torch.long)
+        # X = torch.tensor(X, dtype=torch.float)
+        # y = torch.tensor(y, dtype=torch.long)
         return X, y
 
 

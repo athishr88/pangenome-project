@@ -5,6 +5,7 @@ from utils import f1_utils, correlation_utils
 from prepare_dataset import pd_utils
 from training import trainer
 import pandas as pd
+import os
 
 class Controller:
     """Controller contains all individual services and 
@@ -30,6 +31,10 @@ class Controller:
             pd_utils.identify_best_features_cutoff(cfg)
         elif method == 'combined':
             pd_utils.identify_best_features_combined(cfg)
+        elif method == 'non_coding':
+            pd_utils.identify_best_features_non_coding(cfg)
+        elif method == 'coding':
+            pd_utils.identify_best_features_coding(cfg)
         else:
             raise ValueError('Method must be either "ankle_point" or "cutoff"')
         
@@ -37,26 +42,25 @@ class Controller:
         pd_utils.create_best_features_dataset(cfg)
 
     def create_best_indices_dataset_from_corr_vals(self, cfg):
-        # self.cfg.file_paths.best_features_dataset.out_folder = 'corr_filtered_dataset_top_97_normal'
-        # correlation_utils.find_pearson_correlation(cfg)
-        # correlation_utils.select_from_correlated_indices(cfg)
-        pd_utils.create_best_features_dataset_from_corr_vals(cfg)
+        correlation_utils.find_pearson_correlation(cfg)
+        correlation_utils.select_from_correlated_indices(cfg)
+        # pd_utils.create_best_features_dataset_from_corr_vals(cfg)
 
     def train_correlation_filtered_mlp(self, cfg):
         trainer_handle = trainer.MLPTrainerCorrFiltered(cfg)
         trainer_handle.train()    
 
+    def generate_confusion_matrix_OHE(self, cfg):
+        cfg.preprocessing.dataset.input_size = 50
+        cmg = f1_utils.CMNormal(cfg)
+        cmg.generate_confusion_matrix()
+        
+
+
+
     def train_with_best_features(self, cfg):
         trainer_handle = trainer.MLPTrainerBestFeatures(cfg)
         trainer_handle.train()
-
-    def generate_confusion_matrix(self, cfg):
-        cfg.preprocessing.dataset.input_size = 14692
-        cmg = f1_utils.ConfusionMatrixGenerator(cfg)
-        cm = cmg.generate_confusion_matrix()
-        classes = cfg.preprocessing.dataset.classes
-        df = pd.DataFrame(cm, columns=classes, index=classes)
-        df.to_excel('results/best_indices_top_97/confusion_matrix.xlsx')
 
     def train_transformer_model(self, cfg):
         trainer_handle = trainer.TransformerTrainer(cfg)
