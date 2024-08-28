@@ -54,17 +54,17 @@ class Controller:
         cfg.preprocessing.dataset.input_size = 50
         cmg = f1_utils.CMNormal(cfg)
         cmg.generate_confusion_matrix()
-        
 
+    def train_correlation_filtered_transformer(self, cfg):
+        trainer_handle = trainer.TransformerTrainerCorrFiltered(cfg)
+        trainer_handle.train()
 
 
     def train_with_best_features(self, cfg):
         trainer_handle = trainer.MLPTrainerBestFeatures(cfg)
         trainer_handle.train()
 
-    def train_transformer_model(self, cfg):
-        trainer_handle = trainer.TransformerTrainer(cfg)
-        trainer_handle.train()
+
 
     def train_transformer_model_vocab3(self, cfg):
         trainer_handle = trainer.TransformerTrainerVocab3(cfg)

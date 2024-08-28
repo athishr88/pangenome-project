@@ -191,3 +191,41 @@ class PangenomeWindowedTransformerModel(nn.Module):
         # out = self.blocks.get_attention_matrix(x_combined)
         # return out
         pass
+
+
+# Ramak
+
+class PangenomeWindowedTransformerModel(nn.Module):
+    def __init__(self, cfg):
+        super().__init__()
+        self.cfg = cfg
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        vocab_size = cfg.model.model_params.vocab_size # 50
+        n_embd = cfg.model.model_params.n_embd # 32
+        n_head = cfg.model.model_params.n_head # 4
+        dropout = cfg.model.model_params.dropout # 0.1
+        n_layer = cfg.model.model_params.n_layer # 2
+        hidden_size = cfg.model.model_params.hidden_size # 32
+        num_classes = cfg.preprocessing.dataset.num_classes # 97
+        block_size = 50
+
+        self.indices_embeddings_table = nn.Embedding(vocab_size, n_embd)
+        self.sparse_vals_embedding_table = nn.Embedding(block_size, n_embd)
+
+        self.blocks = BlocksSequential(n_embd, n_head, dropout, n_layer)
+        self.linear1 = nn.Linear(block_size*n_embd, hidden_size)
+        self.linear2 = nn.Linear(hidden_size, num_classes)
+        self.fixed_indices = torch.arange(0, block_size, device=self.device)
+
+    def forward(self, sparse_vals): #(5, 34), (5, 34)
+        indices_emb = self.indices_embeddings_table(self.fixed_indices) # (5, 50, 32)
+        sparse_vals_emb = self.sparse_vals_embedding_table(sparse_vals) # (5, 50, 32)
+
+        out = indices_emb + sparse_vals_emb # (5, 50, 32)
+
+        out = self.blocks(out) # (5, 50, 32) -> (5, 50*32) -> (5, 256) -> (5, 97)
+        out = out.view(out.size(0), -1) # (5, 50*32)
+
+        x = F.relu(self.linear1(out)) # (5, 256)
+        x = self.linear2(x) # (5, 97)
+        return x
