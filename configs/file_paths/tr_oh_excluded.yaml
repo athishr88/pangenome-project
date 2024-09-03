@@ -1,0 +1,9 @@
+defaults:
+  - oh_excluded
+
+model:
+  model_path: saved_models/model_dict_top_97_tr_oh_excluded.pth
+
+logging:
+  logfile: logs/top_97_tr_oh_excluded.log
+  train_history: logs/top_97_tr_oh_excluded_loss_history.json

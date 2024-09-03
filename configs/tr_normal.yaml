@@ -1,7 +1,7 @@
 defaults:
   - utils: base
   - preprocessing: top_97
-  - training: normal
-  - model: base
-  - file_paths: non_coding
+  - training: transformer
+  - model: transformer
   - best_features_dataset: base
+  - file_paths: tr_normal

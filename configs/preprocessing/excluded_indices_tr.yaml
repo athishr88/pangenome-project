@@ -8,4 +8,4 @@ dataset:
   dataset_used: partial
   classes: None
   input_size: 71
-  correlation_threshold: 0.7
+  correlation_threshold: 0.542

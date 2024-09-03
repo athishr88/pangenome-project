@@ -1,0 +1,9 @@
+defaults:
+  - non_coding
+
+model:
+  model_path: saved_models/model_dict_top_97_tr_non_coding.pth
+
+logging:
+  logfile: logs/top_97_tr_non_coding.log
+  train_history: logs/top_97_tr_non_coding_loss_history.json

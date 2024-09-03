@@ -1,7 +1,0 @@
-model_params:
-  vocab_size: 23
-  n_embd: 16
-  n_layer: 2
-  n_head: 2
-  dropout: 0.1
-  hidden_size: 128

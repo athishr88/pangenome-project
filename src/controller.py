@@ -22,21 +22,23 @@ class Controller:
         explainer.explain_test()
 
     def create_best_indices_dataset(self, cfg, method):
-        """ method = 'ankle_point', 'cutoff', combined"""
+        # """ method = 'ankle_point', 'cutoff', combined"""
 
-        # Identify the best features
-        if method == 'ankle_point':
-            pd_utils.identify_best_features_ankle_point(cfg)
-        elif method == 'cutoff':
-            pd_utils.identify_best_features_cutoff(cfg)
-        elif method == 'combined':
-            pd_utils.identify_best_features_combined(cfg)
-        elif method == 'non_coding':
-            pd_utils.identify_best_features_non_coding(cfg)
-        elif method == 'coding':
-            pd_utils.identify_best_features_coding(cfg)
-        else:
-            raise ValueError('Method must be either "ankle_point" or "cutoff"')
+        # # Identify the best features
+        # if method == 'ankle_point':
+        #     pd_utils.identify_best_features_ankle_point(cfg)
+        # elif method == 'cutoff':
+        #     pd_utils.identify_best_features_cutoff(cfg)
+        # elif method == 'combined':
+        #     pd_utils.identify_best_features_combined(cfg)
+        # elif method == 'non_coding':
+        #     pd_utils.identify_best_features_non_coding(cfg)
+        # elif method == 'coding':
+        #     pd_utils.identify_best_features_coding(cfg)
+        # elif method == 'oh_excluded':
+        #     pd_utils.identify_best_features_oh_excluded(cfg)
+        # else:
+        #     raise ValueError('Method must be either "ankle_point" or "cutoff"')
         
         # Create dataset with the identified best features
         pd_utils.create_best_features_dataset(cfg)
@@ -59,59 +61,63 @@ class Controller:
         trainer_handle = trainer.TransformerTrainerCorrFiltered(cfg)
         trainer_handle.train()
 
-
-    def train_with_best_features(self, cfg):
-        trainer_handle = trainer.MLPTrainerBestFeatures(cfg)
-        trainer_handle.train()
-
-
-
-    def train_transformer_model_vocab3(self, cfg):
-        trainer_handle = trainer.TransformerTrainerVocab3(cfg)
-        trainer_handle.train()
-
-    def create_windowed_dataset(self, cfg):
-        dataset = WindowedDataset(cfg)
-        dataset.create_windowed_dataset()
-    
-    def train_windowed_transformer_model(self, cfg):
-        trainer_handle = trainer.TransformerTrainerWindowed(cfg)
-        trainer_handle.train()
-
-    def train_filtered_indices_mlp(self, cfg):
-        trainer_handle = trainer.MLPTrainerFilteredFeatures(cfg)
-        trainer_handle.train()
-
-    def explain_filtered_model(self, cfg):
-        explainer = DeepLiftExplainerFiltered(cfg)
-        explainer.explain_test()
-
-    def train_filtered_with_best_features(self, cfg):
-        trainer_handle = trainer.MLPTrainerBestFeatures(cfg)
-        trainer_handle.train()
-
-    def generate_confusion_matrix_filtered(self, cfg):
-        
-        cmg = f1_utils.ConfusionMatrixGenerator(cfg)
+    def generate_confusion_matrix_TRV2(self, cfg):
+        cfg.preprocessing.dataset.input_size = 50
+        cmg = f1_utils.CMTransformerV2(cfg)
         cmg.generate_confusion_matrix()
+
+
+
+    # def train_with_best_features(self, cfg):
+    #     trainer_handle = trainer.MLPTrainerBestFeatures(cfg)
+    #     trainer_handle.train()
+
+    # def train_transformer_model_vocab3(self, cfg):
+    #     trainer_handle = trainer.TransformerTrainerVocab3(cfg)
+    #     trainer_handle.train()
+
+    # def create_windowed_dataset(self, cfg):
+    #     dataset = WindowedDataset(cfg)
+    #     dataset.create_windowed_dataset()
+    
+    # def train_windowed_transformer_model(self, cfg):
+    #     trainer_handle = trainer.TransformerTrainerWindowed(cfg)
+    #     trainer_handle.train()
+
+    # def train_filtered_indices_mlp(self, cfg):
+    #     trainer_handle = trainer.MLPTrainerFilteredFeatures(cfg)
+    #     trainer_handle.train()
+
+    # def explain_filtered_model(self, cfg):
+    #     explainer = DeepLiftExplainerFiltered(cfg)
+    #     explainer.explain_test()
+
+    # def train_filtered_with_best_features(self, cfg):
+    #     trainer_handle = trainer.MLPTrainerBestFeatures(cfg)
+    #     trainer_handle.train()
+
+    # def generate_confusion_matrix_filtered(self, cfg):
+        
+    #     cmg = f1_utils.ConfusionMatrixGenerator(cfg)
+    #     cmg.generate_confusion_matrix()
     # def create_serotype_mapping(self, cfg):
     #     create_serotype_mapping(cfg)
 
-    def train_correlation_filtered_mlp(self, cfg):
-        trainer_handle = trainer.MLPTrainerCorrFiltered(cfg)
-        trainer_handle.train()
+    # def train_correlation_filtered_mlp(self, cfg):
+    #     trainer_handle = trainer.MLPTrainerCorrFiltered(cfg)
+    #     trainer_handle.train()
 
-    def train_correlation_filtered_transformer(self, cfg):
-        trainer_handle = trainer.TransformerTrainerCorrFiltered(cfg)
-        trainer_handle.train()
+    # def train_correlation_filtered_transformer(self, cfg):
+    #     trainer_handle = trainer.TransformerTrainerCorrFiltered(cfg)
+    #     trainer_handle.train()
 
-    def generate_confusion_matrix_filtered_transformer(self, cfg):
+    # def generate_confusion_matrix_filtered_transformer(self, cfg):
         
-        cmg = f1_utils.CMTransformer(cfg)
-        cmg.generate_confusion_matrix()
+    #     cmg = f1_utils.CMTransformer(cfg)
+    #     cmg.generate_confusion_matrix()
     
     # def create_serotype_mapping(self, cfg):
     #     create_serotype_mapping(cfg)
 
-    def get_attention_matrix(self, cfg):
-        pass
+    # def get_attention_matrix(self, cfg):
+    #     pass

@@ -1,5 +1,6 @@
 model_params:
-  vocab_size: 22
+  vocab_size_sparse: 22
+  vocab_size_indices: 50
   n_embd: 16
   n_layer: 4
   n_head: 1

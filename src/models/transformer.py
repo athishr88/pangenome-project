@@ -1,6 +1,7 @@
 import torch.nn.functional as F
 from torch import nn
 import torch
+import os
 
 device = 'cuda'
 
@@ -133,6 +134,43 @@ class PangenomeTransformerModel(nn.Module):
         X = F.relu(self.token_embeddings_table(X))
         out = self.blocks.get_attention_matrix(X)
         return out
+    
+class PGTransformerV2(nn.Module):
+    def __init__(self, cfg):
+        super().__init__()
+        vocab_size_sparse = cfg.model.model_params.vocab_size_sparse
+        n_embd = cfg.model.model_params.n_embd
+        self.n_embd = n_embd
+        n_head = cfg.model.model_params.n_head
+        dropout = cfg.model.model_params.dropout
+        n_layer = cfg.model.model_params.n_layer
+        hidden_size = cfg.model.model_params.hidden_size
+        input_size = cfg.preprocessing.dataset.input_size
+        num_classes = cfg.preprocessing.dataset.num_classes
+
+        self.sparse_embeddings_table = nn.Embedding(vocab_size_sparse, n_embd)
+        self.indices_embeddings_table = nn.Embedding(input_size, n_embd)
+        self.blocks = BlocksSequential(n_embd, n_head, dropout, n_layer)
+        self.linear_comb = nn.Linear(n_embd, 1)  # TODO 1 can be changed to any number
+        self.dropout = nn.Dropout(dropout)
+        self.ln1 = nn.LayerNorm(n_embd)
+        self.linear1 = nn.Linear(input_size, hidden_size) #TODO 1788 can be changed to any number, define in the hyperparameters
+        self.linear2 = nn.Linear(hidden_size, num_classes)
+
+    def forward(self, f, n, x):
+        sparse_embd = F.relu(self.sparse_embeddings_table(x))  # (batch_size, seq_len, n_embd)
+        indices_embd = F.relu(self.indices_embeddings_table(f))  # (batch_size, seq_len, n_embd)
+        n = n.unsqueeze(-1).expand(-1, -1, self.n_embd)
+        out = sparse_embd + indices_embd + n  # (batch_size, seq_len, n_embd) 
+        out = self.blocks(out)  # (batch_size, seq_len, n_embd)
+        
+        out = self.linear_comb(out)  # (batch_size, seq_len, 1)
+        out = out.squeeze(2)  # Convert to (batch_size, seq_len)
+        # out = self.ln1(out)  # (batch_size, seq_len)
+        
+        x = self.dropout(F.relu(self.linear1(out)))
+        x = self.linear2(x)
+        return x
 
 
 class PangenomeWindowedTransformerModel(nn.Module):

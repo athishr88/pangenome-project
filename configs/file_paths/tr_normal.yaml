@@ -1,3 +1,9 @@
 defaults:
   - normal
 
+model:
+  model_path: saved_models/model_dict_top_97_tr_normal.pth
+
+logging:
+  logfile: logs/top_97_tr_normal.log
+  train_history: logs/top_97_tr_normal_loss_history.json

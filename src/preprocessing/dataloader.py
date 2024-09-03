@@ -311,7 +311,68 @@ class CorrFilteredDataset(TFRBestFeaturesDataclass):
         # y = torch.tensor(y, dtype=torch.long)
         return X, y
 
+class CorrFilteredDatasetTR(TFRBestFeaturesDataclass):
+    data_initialized = False
 
+    def __init__(self, split):
+        super().__init__(split)
+        self.corr_included_indices = self._get_corr_included_indices()
+        
+        self.cfg.preprocessing.dataset.input_size = len(self.corr_included_indices)
+
+        self.normed_indices = (torch.tensor(self.corr_included_indices)-1)/max(self.corr_included_indices)
+        self.normed_indices = torch.tensor(self.normed_indices, dtype=torch.float)
+
+        self.fixed_indices = torch.arange(len(self.corr_included_indices), dtype=torch.long)
+
+
+    def _get_corr_included_indices(self):
+        # Removes all the indices which are correlated and selects
+        # a random index from the correlated indices
+        filename = self.cfg.file_paths.corr_matrix.filtered_indices_file
+
+        with open(filename, "r") as f:
+            features = f.readlines()
+            features = [int(i.rstrip()) for i in features]
+
+        # Rest of the code is to get the "indices" of the features from the best features
+        full_features_file = self.cfg.file_paths.best_features_dataset.best_features_names_out_folder
+        cutoff = self.cfg.best_features_dataset.dataset.cutoff
+        filename = f'Important_Indices_cutoff_{cutoff}.txt'
+        with open(os.path.join(full_features_file, filename), 'r') as f:
+            tfr_indices = f.readlines()
+            tfr_indices = [int(i.rstrip()) for i in tfr_indices]
+
+        excluded_features_index_nums = [tfr_indices.index(i) for i in features]
+        self.logger.log(f"Following indices used {features}")
+        return excluded_features_index_nums
+    
+    def __getitem__(self, idx):
+        if self.split == 'train':
+            sample_name = self.train_samples[idx]
+        elif self.split == 'val':
+            sample_name = self.val_samples[idx]
+        else:
+            sample_name = self.test_samples[idx]
+
+        # dataclass_folder = self.cfg.utils.prepare_dataset.dataclass_out_folder_full
+        dataclass_folder = self.cfg.file_paths.best_features_dataset.dataclass_in_folder
+        
+        with open(os.path.join(dataclass_folder, sample_name), 'rb') as f:
+            sample = pickle.load(f)
+
+        X = sample.sparse_vals #np.uint8
+        # Convert all values above 0 to 1
+        # X = np.where(X > 0, 1, 0) # TODO uncomment for MLP
+        vocab_size = self.cfg.preprocessing.dataset.vocab_size
+        X[X == 99] = 21
+        X = X[self.corr_included_indices]
+        # X = np.eye(vocab_size)[np.array(X, dtype=int)]
+        y = sample.serotype
+
+        # X = torch.tensor(X, dtype=torch.float)
+        # y = torch.tensor(y, dtype=torch.long)
+        return self.fixed_indices, self.normed_indices, X, y
 
 class TFRFilteredFeaturesDataclass(TFRecordsPartialDatasetDataclass):
     data_initialized = False
