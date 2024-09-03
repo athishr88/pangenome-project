@@ -18,9 +18,9 @@ class Sample:
 
 controller = Controller()
 
-@hydra.main(config_path="../configs", config_name="oh_excluded", version_base=None)
+@hydra.main(config_path="../configs", config_name="normal", version_base=None)
 def main(cfg):
-    controller.create_best_indices_dataset(cfg, 'oh_excluded')
+    controller.train_correlation_filtered_mlp(cfg)
     
 
 if __name__ == "__main__":

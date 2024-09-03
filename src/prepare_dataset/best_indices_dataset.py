@@ -72,7 +72,6 @@ class BestFeaturesDataclassDataset:
         # filename = f'Important_Indices_fold_{cutoff}.txt'
         filename = f'Important_Indices_cutoff_{cutoff}.txt'
         best_features_file = os.path.join(best_features_folder, filename)
-        best_features_file = "results/correlation_matrix_oh_excluded/filtered_indices.txt"
 
         with open(best_features_file, 'r') as f:
             tfr_indices = f.readlines()

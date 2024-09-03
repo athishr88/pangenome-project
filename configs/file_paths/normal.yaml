@@ -15,6 +15,8 @@ supporting_files:
 corr_matrix:
   out_file: results/correlation_matrix_normal/corr_matrix.csv
   filtered_indices_file: results/correlation_matrix_normal/filtered_indices.txt
+  correlation_threshold: 0.65
+  target_length: 150
 
 excluded_indices:
   excluded_indices_file: /home/athishramdas/Desktop/Pangenome/pangenome-project/data/cols_genereg.csv

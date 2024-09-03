@@ -24,21 +24,21 @@ class Controller:
     def create_best_indices_dataset(self, cfg, method):
         # """ method = 'ankle_point', 'cutoff', combined"""
 
-        # # Identify the best features
-        # if method == 'ankle_point':
-        #     pd_utils.identify_best_features_ankle_point(cfg)
-        # elif method == 'cutoff':
-        #     pd_utils.identify_best_features_cutoff(cfg)
-        # elif method == 'combined':
-        #     pd_utils.identify_best_features_combined(cfg)
-        # elif method == 'non_coding':
-        #     pd_utils.identify_best_features_non_coding(cfg)
-        # elif method == 'coding':
-        #     pd_utils.identify_best_features_coding(cfg)
-        # elif method == 'oh_excluded':
-        #     pd_utils.identify_best_features_oh_excluded(cfg)
-        # else:
-        #     raise ValueError('Method must be either "ankle_point" or "cutoff"')
+        # Identify the best features
+        if method == 'ankle_point':
+            pd_utils.identify_best_features_ankle_point(cfg)
+        elif method == 'combined':
+            pd_utils.identify_best_features_combined(cfg)
+        elif method == 'normal':
+            pd_utils.identify_best_features_cutoff(cfg)
+        elif method == 'non_coding':
+            pd_utils.identify_best_features_non_coding(cfg)
+        elif method == 'coding':
+            pd_utils.identify_best_features_coding(cfg)
+        elif method == 'oh_excluded':
+            pd_utils.identify_best_features_oh_excluded(cfg)
+        else:
+            raise ValueError('Method must be either "ankle_point" or "cutoff"')
         
         # Create dataset with the identified best features
         pd_utils.create_best_features_dataset(cfg)

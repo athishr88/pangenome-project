@@ -15,6 +15,8 @@ supporting_files:
 corr_matrix:
   out_file: results/correlation_matrix_oh_excluded/corr_matrix.csv
   filtered_indices_file: results/correlation_matrix_oh_excluded/filtered_indices.txt
+  correlation_threshold: 0.65
+  target_length: 150
   
 windowed:
   selected_windows_file: input_data/best_contigs_windows/best_contigs_windows_150.txt

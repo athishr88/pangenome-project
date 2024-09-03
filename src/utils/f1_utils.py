@@ -69,7 +69,7 @@ class ConfusionMatrixGenerator:
         df = pd.DataFrame(cm, columns=classes, index=classes)
         out_folder = self.cfg.file_paths.best_features_dataset.best_features_names_out_folder
         # cutoff = self.cfg.best_features_dataset.dataset.cutoff
-        threshold = self.cfg.preprocessing.dataset.correlation_threshold
+        threshold = self.cfg.file_paths.corr_matrix.correlation_threshold
         out_folder = out_folder + f"/corr_threshold_{threshold}"
         os.makedirs(out_folder, exist_ok=True)
         filename = f"confusion_matrix.xlsx"
@@ -123,7 +123,7 @@ class CMTransformerV2(ConfusionMatrixGenerator):
         df = pd.DataFrame(cm, columns=classes, index=classes)
         out_folder = self.cfg.file_paths.best_features_dataset.best_features_names_out_folder
         # cutoff = self.cfg.best_features_dataset.dataset.cutoff
-        threshold = self.cfg.preprocessing.dataset.correlation_threshold
+        threshold = self.cfg.file_paths.corr_matrix.correlation_threshold
         out_folder = out_folder + f"/corr_threshold_{threshold}"
         os.makedirs(out_folder, exist_ok=True)
         filename = "confusion_matrix_tr.xlsx"
