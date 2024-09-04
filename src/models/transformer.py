@@ -157,7 +157,7 @@ class PGTransformerV2(nn.Module):
         self.linear1 = nn.Linear(input_size, hidden_size) #TODO 1788 can be changed to any number, define in the hyperparameters
         self.linear2 = nn.Linear(hidden_size, num_classes)
 
-    def forward(self, f, n, x):
+    def forward(self, f, n, x): # f: fixed_indices, n: normalized_indices, x: sparse_vals
         sparse_embd = F.relu(self.sparse_embeddings_table(x))  # (batch_size, seq_len, n_embd)
         indices_embd = F.relu(self.indices_embeddings_table(f))  # (batch_size, seq_len, n_embd)
         n = n.unsqueeze(-1).expand(-1, -1, self.n_embd)
