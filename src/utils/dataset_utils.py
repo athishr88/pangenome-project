@@ -42,3 +42,13 @@ def create_pickled_dataset(cfg):
 
                 with open(os.path.join(out_folder, file_name.split('.')[0] + '.pkl'), 'wb') as f:
                     pickle.dump(sample, f)
+
+
+def filter_samples(cfg):
+    norm_data_filename = cfg.file_paths.best_features_dataset.dataset_text_file
+    df = pd.read_csv(norm_data_filename, sep=", ", index_col=0)
+    unique_serotypes = df['serotype_encoded'].unique()
+
+    for serotype in unique_serotypes:
+        df_serotype = df[df['serotype_encoded'] == serotype]
+    pass
