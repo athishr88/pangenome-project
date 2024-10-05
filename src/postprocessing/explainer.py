@@ -30,13 +30,13 @@ class DeepLiftExplainerTop97:
         return model
     
     def _config_files_prepare(self):
-        y_file = self.cfg.file_paths.supporting_files.serotype_file_path
-        df = pd.read_csv(y_file)
-        # Remove the rows in which the Serotype value is 0
-        df = df[df['Serotype'] != '0']
-        df = df[df['Serotype'] != '---']
+        y_file = self.cfg.file_paths.supporting_files.serotype_mapping_file_path
+        df = pd.read_csv(y_file, sep=', ', header=None)
+        # Remove the rows in which the Serotype value is '-'
+        classes = df[0].values.tolist()
+        classes.remove('-')
         top_n = self.cfg.preprocessing.dataset.top_n
-        top_serotypes = df['Serotype'].value_counts().head(top_n).index.tolist()
+        top_serotypes = classes[:top_n]
         self.cfg.preprocessing.dataset.classes = top_serotypes
         self.logger.log(f"Top {top_n} serotypes: {top_serotypes}")
     

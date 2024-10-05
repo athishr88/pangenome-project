@@ -43,14 +43,15 @@ class WindowedDataset:
         os.makedirs(out_folder, exist_ok=True)
 
     def _configs_file_prepare(self):
-        y_file = self.cfg.preprocessing.dataset.serotype_file_path
-        df = pd.read_csv(y_file)
-        # Remove the rows in which the Serotype value is 0
-        df = df[df['Serotype'] != '0']
-        df = df[df['Serotype'] != '---']
+        y_file = self.cfg.file_paths.supporting_files.serotype_mapping_file_path
+        df = pd.read_csv(y_file, sep=', ', header=None)
+        # Remove the rows in which the Serotype value is '-'
+        classes = df[0].values.tolist()
+        classes.remove('-')
         top_n = self.cfg.preprocessing.dataset.top_n
-        top_serotypes = df['Serotype'].value_counts().head(top_n).index.tolist()
+        top_serotypes = classes[:top_n]
         self.cfg.preprocessing.dataset.classes = top_serotypes
+        self.logger.log(f"Top {top_n} serotypes: {top_serotypes}")
 
     def _get_sample_names(self):
         y_file = self.cfg.preprocessing.dataset.serotype_file_path

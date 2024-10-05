@@ -63,14 +63,13 @@ class TFRecordsPartialDatasetDataclass(Dataset):
 
     @classmethod
     def _get_classes(self):
-        y_file = self.cfg.file_paths.supporting_files.serotype_file_path
-        df = pd.read_csv(y_file)
-        # Remove the rows in which the Serotype value is 0
-        df = df[df['Serotype'] != '0']
-        df = df[df['Serotype'] != '---']
+        y_file = self.cfg.file_paths.supporting_files.serotype_mapping_file_path
+        df = pd.read_csv(y_file, sep=', ', header=None)
+        # Remove the rows in which the Serotype value is '-'
+        classes = df[0].values.tolist()
+        classes.remove('-')
         top_n = self.cfg.preprocessing.dataset.top_n
-        top_serotypes = df['Serotype'].value_counts().head(top_n).index.tolist()
-        # self.cfg.preprocessing.dataset.classes = top_serotypes
+        top_serotypes = classes[:top_n]
         self.logger.log(f"Top {top_n} serotypes: {top_serotypes}")
         return top_serotypes
 
@@ -145,6 +144,9 @@ class TFRecordsPartialDatasetDataclass(Dataset):
 
         X = self._get_X(sample.indices, sample.sparse_vals)
         y = sample.serotype
+        # Adjustment for '-'
+        if y > 116:
+            y -= 1
         return X, y
 
 class TFRBestFeaturesDataclass(Dataset):
@@ -165,13 +167,13 @@ class TFRBestFeaturesDataclass(Dataset):
 
     @classmethod
     def _config_files_prepare(self):
-        y_file = self.cfg.file_paths.supporting_files.serotype_file_path
-        df = pd.read_csv(y_file)
-        # Remove the rows in which the Serotype value is 0
-        df = df[df['Serotype'] != '0']
-        df = df[df['Serotype'] != '---']
+        y_file = self.cfg.file_paths.supporting_files.serotype_mapping_file_path
+        df = pd.read_csv(y_file, sep=', ', header=None)
+        # Remove the rows in which the Serotype value is '-'
+        classes = df[0].values.tolist()
+        classes.remove('-')
         top_n = self.cfg.preprocessing.dataset.top_n
-        top_serotypes = df['Serotype'].value_counts().head(top_n).index.tolist()
+        top_serotypes = classes[:top_n]
         self.cfg.preprocessing.dataset.classes = top_serotypes
         self.logger.log(f"Top {top_n} serotypes: {top_serotypes}")
 
@@ -250,6 +252,9 @@ class TFRBestFeaturesDataclass(Dataset):
         # Convert all values above 0 to 1
         X = np.where(X > 0, 1, 0)
         y = sample.serotype
+        # Adjustment for '-'
+        if y > 116:
+            y -= 1
 
         X = torch.tensor(X, dtype=torch.float)
         y = torch.tensor(y, dtype=torch.long)
@@ -306,6 +311,9 @@ class CorrFilteredDataset(TFRBestFeaturesDataclass):
         X = X[self.corr_included_indices]
         X = np.eye(vocab_size)[np.array(X, dtype=int)]
         y = sample.serotype
+        # Adjustment for '-'
+        if y > 116:
+            y -= 1
 
         # X = torch.tensor(X, dtype=torch.float)
         # y = torch.tensor(y, dtype=torch.long)
@@ -369,6 +377,9 @@ class CorrFilteredDatasetTR(TFRBestFeaturesDataclass):
         X = X[self.corr_included_indices]
         # X = np.eye(vocab_size)[np.array(X, dtype=int)]
         y = sample.serotype
+        # Adjustment for '-'
+        if y > 116:
+            y -= 1
 
         # X = torch.tensor(X, dtype=torch.float)
         # y = torch.tensor(y, dtype=torch.long)
@@ -421,6 +432,9 @@ class TFRTransformerDataset(TFRBestFeaturesDataclass):
         # If the value is 99, change it to 21
         X = np.where(X == 99, 21, X)
         y = sample.serotype
+        # Adjustment for '-'
+        if y > 116:
+            y -= 1
         X = torch.tensor(X, dtype=torch.long)
         y = torch.tensor(y, dtype=torch.long)
         return X, y
@@ -449,6 +463,9 @@ class TFRTransformerDatasetVocab3(TFRBestFeaturesDataclass):
         # Rest of the values are 1
         X = np.where(X > 0, 1, X)
         y = sample.serotype
+        # Adjustment for '-'
+        if y > 116:
+            y -= 1
         X = torch.tensor(X, dtype=torch.long)
         y = torch.tensor(y, dtype=torch.long)
         return X, y

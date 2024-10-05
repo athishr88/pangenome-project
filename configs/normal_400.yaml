@@ -1,0 +1,6 @@
+defaults:
+  - utils: base
+  - preprocessing: top_400
+  - training: base
+  - model: base
+  - file_paths: top_400_normal

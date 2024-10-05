@@ -46,15 +46,14 @@ class BestFeaturesDataclassDataset:
     def _get_ys_df(self):
         serotype_file_path = self.cfg.file_paths.supporting_files.serotype_file_path
         serotype_df = pd.read_csv(serotype_file_path)
-        serotype_counts = serotype_df['Serotype'].value_counts()
-        serotype_descending = serotype_counts.index.tolist()
         
-        if '0' in serotype_descending:
-            serotype_descending.remove('0')
-        if '---' in serotype_descending:
-            serotype_descending.remove('---')
-        
-        top_serotypes = serotype_descending[:self.num_top_serotypes]
+        y_file = self.cfg.file_paths.supporting_files.serotype_mapping_file_path
+        df = pd.read_csv(y_file, sep=', ', header=None)
+        # Remove the rows in which the Serotype value is '-'
+        classes = df[0].values.tolist()
+        classes.remove('-')
+        top_n = self.cfg.preprocessing.dataset.top_n
+        top_serotypes = classes[:top_n]
 
 
         self._update_classes(top_serotypes)

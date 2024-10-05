@@ -1,0 +1,10 @@
+defaults:
+  - base
+
+dataset:
+  top_n: 400
+  fixed_feature_len: 236071
+  num_classes: 400
+  classes: None
+  correlation_threshold: 0.65
+  

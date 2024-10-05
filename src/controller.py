@@ -13,7 +13,7 @@ class Controller:
     def __init__(self) -> None:
         pass
     
-    def train_mlp_top_97(self, cfg):
+    def train_mlp(self, cfg):
         trainer_handle = trainer.MLPTrainer(cfg)
         trainer_handle.train()
 

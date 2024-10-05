@@ -1,0 +1,38 @@
+best_features_dataset:
+  best_features_names_out_folder: results/best_indices_normal/
+  out_folder: best_features_dataset
+  dataclass_in_folder: best_features_dataset/dataclass
+  metadata_in_folder: best_features_dataset/metadata
+  dataset_text_file: best_features_dataset/best_400_dataset.txt
+
+full_dataset:
+  dataclass_in_folder: /media/athishramdas/data/Pangenome-archive/tf_records_dataclass
+
+supporting_files:
+  fi_folder: explanations
+  serotype_file_path: data/SRA_Serotype_file.csv
+  serotype_mapping_file_path: data/serotype_mapping.txt
+
+corr_matrix:
+  out_file: results/correlation_matrix_normal/corr_matrix.csv
+  filtered_indices_file: results/correlation_matrix_normal/filtered_indices.txt
+  correlation_threshold: 0.65
+  target_length: 166
+
+excluded_indices:
+  excluded_indices_file: /home/athishramdas/Desktop/Pangenome/pangenome-project/data/cols_genereg.csv
+
+windowed:
+  selected_windows_file: input_data/best_contigs_windows/best_contigs_windows_150.txt
+  out_folder: /home/athishramdas/Desktop/Pangenome/transformer-attempt/pangenome-project/windowed_dataset
+  
+model:
+  model_path: saved_models/model_dict_top_400_normal.pth
+
+logging:
+  logfile: logs/top_400_normal.log
+  train_history: logs/top_400_normal_loss_history.json
+
+explanation:
+  attention_matrix_out_folder: attention_matrices
+  deeplift_fi_folder: results/deeplift_fi

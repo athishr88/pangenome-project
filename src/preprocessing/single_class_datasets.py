@@ -186,6 +186,9 @@ class BestSingleClassDatasetCorrFiltered(Dataset):
         X[X == 99] = 21
         X = X[self.corr_included_indices]
         y = sample.serotype
+        # Adjustment for '-'
+        if y > 116:
+            y -= 1
 
         X = torch.tensor(X, dtype=torch.float)
         y = torch.tensor(y, dtype=torch.long)
