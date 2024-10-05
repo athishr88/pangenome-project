@@ -20,7 +20,7 @@ controller = Controller()
 
 @hydra.main(config_path="../configs", config_name="normal_400", version_base=None)
 def main(cfg):
-    controller.train_mlp(cfg)
+    controller.explain_model(cfg)
     
 
 if __name__ == "__main__":

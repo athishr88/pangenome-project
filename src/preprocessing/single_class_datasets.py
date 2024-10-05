@@ -93,6 +93,9 @@ class SingleClassDataset(Dataset):
         indices, sparse_values = self._indices_and_sparse_vals(idx)
         X = self._get_X(indices, sparse_values)
         y = self._get_y()
+        # Adjustment for '-'
+        if y > 116:
+            y -= 1
         return X, y
     
 class SingleClassFiltered(SingleClassDataset):
